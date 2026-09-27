@@ -10,6 +10,7 @@ const out = resolve(root, 'dist');
 const APPS = [
   { from: 'apps/hub/dist', to: '.' },
   { from: 'apps/phrase-board/dist', to: 'phrase-board' },
+  { from: 'apps/listen-reply/dist', to: 'listen-reply' },
 ];
 
 rmSync(out, { recursive: true, force: true });

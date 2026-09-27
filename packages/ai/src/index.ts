@@ -74,7 +74,7 @@ export async function generate(
   opts: { signal?: AbortSignal; adapters?: Partial<Record<ProviderId, Adapter>> } = {},
 ): Promise<string[]> {
   if (!isConfigured(cfg)) throw new AiError('auth', 'Add an API key in Settings to use AI suggestions.');
-  if (req.words.length === 0) return [];
+  if (req.words.length === 0 && !req.context?.trim()) return [];
   const adapter = opts.adapters?.[cfg.provider] ?? ADAPTERS[cfg.provider];
   const model = cfg.model || PROVIDERS[cfg.provider].defaultModel;
   let text: string;

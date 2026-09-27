@@ -33,6 +33,19 @@ const STATES: { name: string; path: string; settings?: Record<string, unknown>; 
     path: 'phrase-board/',
     act: async (page) => page.getByRole('button', { name: /type/i }).click(),
   },
+  { name: 'listen & reply', path: 'listen-reply/' },
+  {
+    name: 'listen & reply with an utterance and AI',
+    path: 'listen-reply/',
+    settings: { aiProvider: 'demo', aiModel: 'demo' },
+    act: async (page) => {
+      await page.getByRole('button', { name: /type what they said/i }).click();
+      await page.getByRole('textbox').fill('Would you like the physical therapist to come back tomorrow?');
+      await page.getByRole('button', { name: 'Add' }).click();
+      await page.getByRole('button', { name: 'Say it' }).click();
+      await page.getByRole('group', { name: 'Suggested sentences' }).waitFor();
+    },
+  },
   {
     name: 'letter search',
     path: 'phrase-board/',
@@ -58,7 +71,7 @@ for (const state of STATES) {
 test('no horizontal scrolling at phone width', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   await prepare(page);
-  for (const path of ['./', 'phrase-board/']) {
+  for (const path of ['./', 'phrase-board/', 'listen-reply/']) {
     await page.goto(path);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow, path).toBeLessThanOrEqual(0);

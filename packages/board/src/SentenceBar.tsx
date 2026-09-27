@@ -1,5 +1,5 @@
 import { BigButton, ScanGroup } from '@access-suite/access-ui';
-import type { MessageAction, Token } from '../state';
+import type { MessageAction, Token } from './state';
 
 export function SentenceBar({
   tokens,

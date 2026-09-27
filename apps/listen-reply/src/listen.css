@@ -1,0 +1,63 @@
+.heard {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.heard__controls .big-btn {
+  flex: 1 1 160px;
+}
+
+.heard__current {
+  min-height: 64px;
+}
+
+.heard__text {
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  margin: 4px 0 6px;
+  line-height: 1.25;
+}
+
+.heard__interim {
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.heard__earlier {
+  text-align: left;
+}
+
+.quick .quick__reply {
+  flex: 1 1 140px;
+  font-size: 1.3rem;
+}
+
+.phrases .phrase {
+  flex: 1 1 180px;
+}
+
+.partner-form {
+  display: grid;
+  gap: 10px;
+}
+
+.partner-form label {
+  font-weight: 700;
+}
+
+.partner-form textarea {
+  font: inherit;
+  font-size: 1.2rem;
+  padding: 10px 12px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  width: 100%;
+  resize: vertical;
+}

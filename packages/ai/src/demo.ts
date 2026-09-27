@@ -14,6 +14,15 @@ const TEMPLATES: Record<Intent, ((p: string) => string)[]> = {
   casual: [(p) => `Hey! ${cap(p)}.`, (p) => `I've been thinking about ${p}.`, (p) => `How about ${p}?`],
 };
 
+// Replies to something that was said, when the user hasn't picked any words.
+const REPLY_ONLY: Record<Intent, string[]> = {
+  statement: ['Okay.', 'I understand.', 'Tell me more.'],
+  question: ['Can you say that again?', 'What do you mean?', 'When?'],
+  yes: ['Yes.', 'Yes, please.', 'Yes, that sounds good.'],
+  no: ['No.', 'No, thank you.', 'Not right now.'],
+  casual: ['Ha, really?', 'That’s nice.', 'Oh, okay.'],
+};
+
 /**
  * Canned, deterministic suggestions: lets people try the flow with no key and
  * no network, and gives tests a stable adapter. Clearly labelled as a demo.
@@ -21,6 +30,7 @@ const TEMPLATES: Record<Intent, ((p: string) => string)[]> = {
 export const demoAdapter: Adapter = async (_cfg, _prompt, req, signal) => {
   await new Promise((r) => setTimeout(r, 250));
   if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+  if (req.words.length === 0) return JSON.stringify(REPLY_ONLY[req.intent]);
   // Templates supply their own "I / can I have", so drop pronouns and helper
   // verbs: "I want water" → "water" → "Can I have water?".
   const content = req.words.filter((w) => !FUNCTION_WORDS.has(w.toLowerCase()));

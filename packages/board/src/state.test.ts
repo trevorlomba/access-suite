@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { freqScale, messageReducer, messageText, recordUse, type Token } from './state';
 import { CATEGORIES, PRONOUNS, allWords, wordsStartingWith } from './vocab';
+import { fitScale } from './WordRows';
+
+describe('fitScale', () => {
+  it('shrinks only long words, never below 75%', () => {
+    expect(fitScale('water', 3)).toBe(1);
+    expect(fitScale('wonderful', 3)).toBeCloseTo(8 / 9);
+    expect(fitScale('comfortable', 3)).toBe(0.75); // 8/11 is below the floor
+    expect(fitScale('comfortable', 6)).toBeCloseTo(10 / 11);
+  });
+});
 
 const tokens = (...words: string[]): Token[] => words.map((text, i) => ({ id: i + 100, text }));
 

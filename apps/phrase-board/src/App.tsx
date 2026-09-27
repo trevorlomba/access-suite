@@ -1,25 +1,26 @@
 import { useReducer, useState } from 'react';
+import { BigButton, Dialog, OnScreenKeyboard, ScanGroup, SettingsPanel, useSpeak } from '@access-suite/access-ui';
 import {
-  BigButton,
-  Dialog,
-  OnScreenKeyboard,
-  ScanGroup,
-  SettingsPanel,
-  useSettings,
-  useSpeak,
-} from '@access-suite/access-ui';
-import { isConfigured, type ProviderConfig } from '@access-suite/ai';
-import { CATEGORIES, LETTERS, PRONOUNS, wordsStartingWith, type Word } from './vocab';
-import { messageReducer, messageText, useFrequencies, useSavedPhrases } from './state';
-import { SentenceBar } from './components/SentenceBar';
-import { Suggestions } from './components/Suggestions';
-import { SavedPhrases } from './components/SavedPhrases';
-import { WordRows, tone } from './components/WordRows';
+  CATEGORIES,
+  LETTERS,
+  PRONOUNS,
+  SavedPhrases,
+  SentenceBar,
+  Suggestions,
+  WordRows,
+  messageReducer,
+  messageText,
+  tone,
+  useAiConfig,
+  useFrequencies,
+  useSavedPhrases,
+  wordsStartingWith,
+  type Word,
+} from '@access-suite/board';
 
 type View = { kind: 'category'; id: string } | { kind: 'letters' } | { kind: 'letter'; letter: string };
 
 export function App() {
-  const { settings } = useSettings();
   const { speak, supported: canSpeakAloud } = useSpeak();
   const { freq, record } = useFrequencies();
   const { saved, add: savePhrase, remove: removePhrase } = useSavedPhrases();
@@ -31,11 +32,7 @@ export function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [announcement, setAnnouncement] = useState('');
 
-  const aiConfig: ProviderConfig | null =
-    settings.aiProvider !== 'none' &&
-    isConfigured({ provider: settings.aiProvider, apiKey: settings.aiKey, model: settings.aiModel })
-      ? { provider: settings.aiProvider, apiKey: settings.aiKey, model: settings.aiModel }
-      : null;
+  const aiConfig = useAiConfig();
 
   const say = (text: string, words: string[]) => {
     speak(text);
@@ -53,10 +50,10 @@ export function App() {
   const current = view.kind === 'category' ? CATEGORIES.find((c) => c.id === view.id) : undefined;
 
   return (
-    <div className="pb">
-      <header className="pb-header">
+    <div className="tool">
+      <header className="tool-header">
         <h1>Phrase Board</h1>
-        <ScanGroup label="Tools" className="pb-header__tools">
+        <ScanGroup label="Tools" className="tool-header__tools">
           <a href="../" className="big-btn big-btn--quiet home-link" data-scan-item="">
             ⌂ All tools
           </a>
@@ -71,8 +68,8 @@ export function App() {
         </p>
       )}
 
-      <main className="pb-main">
-        <div className="pb-compose">
+      <main className="tool-main">
+        <div className="tool-compose">
           <SentenceBar
             tokens={tokens}
             selected={selected}
@@ -162,7 +159,7 @@ export function App() {
           </section>
         </div>
 
-        <aside className="pb-side">
+        <aside className="tool-side">
           <SavedPhrases saved={saved} onSpeak={(p) => say(p, p.split(/\s+/))} onRemove={removePhrase} />
         </aside>
       </main>

@@ -1,10 +1,10 @@
-.pb {
+.tool {
   max-width: 1400px;
   margin: 0 auto;
   padding: 12px 16px 32px;
 }
 
-.pb-header {
+.tool-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -13,7 +13,7 @@
   margin-bottom: 12px;
 }
 
-.pb-header h1 {
+.tool-header h1 {
   font-size: 1.6rem;
   display: flex;
   align-items: center;
@@ -27,24 +27,24 @@
   text-decoration: none;
 }
 
-.pb-main {
+.tool-main {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
 
 @media (min-width: 1000px) {
-  .pb-main {
+  .tool-main {
     grid-template-columns: minmax(0, 1fr) 300px;
     align-items: start;
   }
-  .pb-side {
+  .tool-side {
     position: sticky;
     top: 12px;
   }
 }
 
-.pb-compose {
+.tool-compose {
   display: grid;
   gap: 16px;
   min-width: 0;
@@ -194,7 +194,7 @@
 }
 
 @media (max-width: 520px) {
-  .pb {
+  .tool {
     padding: 8px 12px 24px;
   }
   .sentence__words .chip {

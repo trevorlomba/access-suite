@@ -18,10 +18,11 @@
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "build": "npm run build -w @access-suite/hub && npm run build -w @access-suite/phrase-board && node scripts/assemble-site.mjs",
+    "build": "npm run build -w @access-suite/hub && npm run build -w @access-suite/phrase-board && npm run build -w @access-suite/listen-reply && node scripts/assemble-site.mjs",
     "preview": "vite preview --outDir dist --port 4173 --strictPort",
     "e2e": "playwright test",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run e2e"
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run e2e",
+    "dev:listen": "npm run dev -w @access-suite/listen-reply"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",

@@ -17,8 +17,9 @@ const TOOLS: Tool[] = [
   },
   {
     name: 'Listen & Reply',
-    status: 'next',
+    status: 'available',
     blurb: 'Captions what someone says to you and turns their words into buttons, so you can reply in a few selections.',
+    href: './listen-reply/',
   },
   {
     name: 'Vocabulary Builder',

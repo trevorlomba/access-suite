@@ -16,7 +16,7 @@ palsy — and the people who care for them.
 | Tool | Status |
 |---|---|
 | **Phrase Board**: tap, scan or dwell on words to build a message and hear it spoken; optionally let AI expand a few words into full sentences | ✅ MVP |
-| **Listen & Reply**: caption what someone says and reply using their words | Next |
+| **Listen & Reply**: caption what someone says and reply using their words | ✅ MVP |
 | **Vocabulary Builder**: a personal word list from your own texts, processed on-device | Planned |
 | **Dwell Panels**: design custom big-button panels | Planned |
 | **Mac Toolkit**: Keyboard Maestro + Accessibility Keyboard panels | Planned |
@@ -32,6 +32,7 @@ Requires Node 20+.
 npm install
 npm run dev          # Phrase Board at http://localhost:5173
 npm run dev:hub      # hub landing page
+npm run dev:listen   # Listen & Reply
 npm run check        # lint → typecheck → unit tests → build → E2E + axe
 ```
 
@@ -43,7 +44,11 @@ First E2E run: `npx playwright install chromium`.
 apps/
   hub/             landing page + shared settings
   phrase-board/    the Phrase Board tool
+  listen-reply/    the Listen & Reply tool
 packages/
+  board/           message composer shared by the tools: sentence bar,
+                   word rows, suggestions, saved phrases, vocabulary,
+                   transcript analysis (board/transcript)
   access-ui/       input & output primitives: scanning, dwell, speech,
                    settings, big buttons, dialog, on-screen keyboard
   ai/              provider-agnostic generate(): Claude, OpenAI, demo

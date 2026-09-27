@@ -44,7 +44,7 @@ export function messageText(tokens: Token[]): string {
 
 // ---- Word frequency (learned locally) ---------------------------------------
 
-const FREQ_KEY = `${STORAGE_PREFIX}phrase-board:freq`;
+const FREQ_KEY = `${STORAGE_PREFIX}board:freq`;
 export type Frequencies = Record<string, number>;
 
 export function recordUse(freq: Frequencies, words: string[]): Frequencies {
@@ -77,7 +77,7 @@ export function useFrequencies() {
 
 // ---- Saved phrases ------------------------------------------------------------
 
-const SAVED_KEY = `${STORAGE_PREFIX}phrase-board:saved`;
+const SAVED_KEY = `${STORAGE_PREFIX}board:saved`;
 const DEFAULT_SAVED = ['Yes', 'No', 'I need help', 'Please wait, I am typing', 'Thank you'];
 
 export function useSavedPhrases() {

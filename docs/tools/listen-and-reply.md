@@ -1,6 +1,6 @@
 # Listen & Reply
 
-**Status:** Spec · successor to `speech-assist` / `speech-assist-app`
+**Status:** MVP built · `apps/listen-reply` · successor to `speech-assist` / `speech-assist-app`
 
 When someone speaks *to* an AAC user, the fastest reply usually reuses their
 words. Listen & Reply transcribes the conversation partner, turns what they said

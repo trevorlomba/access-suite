@@ -55,13 +55,18 @@ export function useSpeak() {
 // Speech recognition (used by Listen & Reply). Feature-detected: Chromium and
 // Safari expose it, Firefox does not.
 
+interface RecognitionResultList {
+  length: number;
+  [index: number]: { isFinal: boolean; 0?: { transcript: string } };
+}
+
 interface RecognitionLike {
   continuous: boolean;
   interimResults: boolean;
   lang: string;
   start(): void;
   stop(): void;
-  onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null;
+  onresult: ((e: { resultIndex: number; results: RecognitionResultList }) => void) | null;
   onerror: ((e: { error: string }) => void) | null;
   onend: (() => void) | null;
 }
@@ -74,13 +79,35 @@ function getRecognition(): RecognitionCtor | null {
   return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
 }
 
-export function useListen(lang = 'en-US') {
+export function listenSupported(): boolean {
+  return getRecognition() != null;
+}
+
+const LISTEN_ERRORS: Record<string, string> = {
+  'not-allowed': 'Microphone access was blocked. Allow it in your browser settings, or type instead.',
+  'service-not-allowed': 'Speech recognition is blocked in this browser. You can type instead.',
+  'no-speech': 'No speech heard. Try again.',
+  network: 'Speech recognition needs an internet connection in this browser.',
+  'audio-capture': 'No microphone found.',
+};
+
+/**
+ * Continuous speech recognition. `onUtterance` fires once per finished
+ * phrase; `interim` shows words while they're still being recognized.
+ */
+export function useListen({ lang = 'en-US', onUtterance }: { lang?: string; onUtterance: (text: string) => void }) {
   const Ctor = getRecognition();
   const rec = useRef<RecognitionLike | null>(null);
+  const onUtteranceRef = useRef(onUtterance);
   const [listening, setListening] = useState(false);
-  const [transcript, setTranscript] = useState('');
   const [interim, setInterim] = useState('');
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    onUtteranceRef.current = onUtterance;
+  }, [onUtterance]);
+
+  useEffect(() => () => rec.current?.stop(), []);
 
   const start = useCallback(() => {
     if (!Ctor) {
@@ -92,19 +119,23 @@ export function useListen(lang = 'en-US') {
     r.interimResults = true;
     r.lang = lang;
     r.onresult = (e) => {
-      let finalText = '';
       let interimText = '';
-      for (let i = 0; i < e.results.length; i++) {
+      for (let i = e.resultIndex; i < e.results.length; i++) {
         const res = e.results[i]!;
-        const t = res[0]?.transcript ?? '';
-        if (res.isFinal) finalText += t;
-        else interimText += t;
+        const t = (res[0]?.transcript ?? '').trim();
+        if (!t) continue;
+        if (res.isFinal) onUtteranceRef.current(t);
+        else interimText += `${t} `;
       }
-      setTranscript(finalText.trim());
       setInterim(interimText.trim());
     };
-    r.onerror = (e) => setError(e.error);
-    r.onend = () => setListening(false);
+    r.onerror = (e) => {
+      if (e.error !== 'aborted') setError(LISTEN_ERRORS[e.error] ?? `Speech recognition error: ${e.error}`);
+    };
+    r.onend = () => {
+      setListening(false);
+      setInterim('');
+    };
     rec.current = r;
     setError(null);
     r.start();
@@ -113,5 +144,5 @@ export function useListen(lang = 'en-US') {
 
   const stop = useCallback(() => rec.current?.stop(), []);
 
-  return { supported: !!Ctor, listening, transcript, interim, error, start, stop };
+  return { supported: !!Ctor, listening, interim, error, start, stop };
 }
