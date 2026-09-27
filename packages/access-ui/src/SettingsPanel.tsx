@@ -1,4 +1,5 @@
-import { useId, type ReactNode } from 'react';
+import { useId, useState, type ReactNode } from 'react';
+import { createBackup, restoreBackup } from './backup';
 import { PROVIDERS, type ProviderId } from '@access-suite/ai';
 import { BigButton, ScanGroup } from './components';
 import { useSettings, type AiProviderId, type InputMode } from './settings';
@@ -19,6 +20,70 @@ function Field({ label, children, help }: { label: string; children: (id: string
       {children(id)}
       {help && <p className="help">{help}</p>}
     </div>
+  );
+}
+
+/**
+ * Backup / restore of everything stored on this device. Restoring reloads the
+ * page so every tool picks up the restored data.
+ */
+function YourData({ onRestored = () => window.location.reload() }: { onRestored?: () => void }) {
+  const inputId = useId();
+  const [message, setMessage] = useState<{ kind: 'ok' | 'error'; text: string } | null>(null);
+
+  const download = () => {
+    const backup = createBackup();
+    const url = URL.createObjectURL(new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `access-suite-backup-${backup.createdAt.slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setMessage({ kind: 'ok', text: 'Backup downloaded. Keep it somewhere safe, like email or cloud storage.' });
+  };
+
+  const restore = async (file: File | undefined) => {
+    if (!file) return;
+    try {
+      const n = restoreBackup(await file.text());
+      setMessage({ kind: 'ok', text: `Restored ${n} items. Reloading…` });
+      onRestored();
+    } catch (err) {
+      setMessage({ kind: 'error', text: err instanceof Error ? err.message : 'Could not restore that file.' });
+    }
+  };
+
+  return (
+    <fieldset>
+      <legend>Your data</legend>
+      <p className="help">
+        Saved phrases, your words, word sizes and settings live only in this browser. Download a backup so a browser
+        reset or a new device doesn’t lose them. (Your AI key is never included.)
+      </p>
+      <ScanGroup label="Backup">
+        <BigButton onClick={download}>Download a backup</BigButton>
+        <label htmlFor={inputId} className="big-btn file-button" data-scan-item="">
+          Restore from a backup
+        </label>
+        <input
+          id={inputId}
+          className="visually-hidden"
+          type="file"
+          accept=".json,application/json"
+          onChange={(e) => {
+            void restore(e.target.files?.[0]);
+            e.target.value = '';
+          }}
+        />
+      </ScanGroup>
+      {message && (
+        <p className={message.kind === 'error' ? 'error' : 'help'} role={message.kind === 'error' ? 'alert' : 'status'}>
+          {message.text}
+        </p>
+      )}
+    </fieldset>
   );
 }
 
@@ -177,6 +242,8 @@ export function SettingsPanel({ showAi = true }: { showAi?: boolean }) {
           )}
         </fieldset>
       )}
+
+      <YourData />
 
       <ScanGroup label="Reset settings">
         <BigButton variant="quiet" onClick={reset}>

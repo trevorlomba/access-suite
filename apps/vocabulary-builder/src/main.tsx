@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { AccessInput, SettingsProvider } from '@access-suite/access-ui';
+import { AccessInput, SettingsProvider, registerOffline } from '@access-suite/access-ui';
 import '@access-suite/access-ui/styles.css';
 import '@access-suite/board/board.css';
 import './builder.css';
@@ -15,3 +15,5 @@ createRoot(document.getElementById('root')!).render(
     </SettingsProvider>
   </StrictMode>,
 );
+
+registerOffline('../sw.js');

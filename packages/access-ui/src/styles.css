@@ -171,6 +171,18 @@ a {
   transform: scale(0.97);
 }
 
+/* A <label> for a visually hidden file input, styled as a button. */
+.file-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-button:has(+ input:focus-visible) {
+  outline: 4px solid var(--focus);
+  outline-offset: 3px;
+}
+
 .big-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;

@@ -8,3 +8,6 @@ export { BigButton, ScanGroup, Dialog } from './components';
 export type { BigButtonProps, ScanGroupProps, DialogProps } from './components';
 export { OnScreenKeyboard } from './OnScreenKeyboard';
 export { SettingsPanel } from './SettingsPanel';
+export { registerOffline } from './offline';
+export { createBackup, restoreBackup, BACKUP_FORMAT } from './backup';
+export type { Backup } from './backup';

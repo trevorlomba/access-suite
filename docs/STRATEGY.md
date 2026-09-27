@@ -67,7 +67,7 @@ of them at once.
    phrase extraction). Go public on GitHub Pages.
 3. **Then:** Vocabulary Builder (feeds personal vocabulary into 1 and 2),
    import/export of settings and phrases as a JSON file.
-4. **Later:** Dwell Panels, Mac Toolkit release, PWA/offline install,
+4. **Later:** Dwell Panels, Mac Toolkit release (offline install + backup: done),
    translations.
 
 ## Architecture in one paragraph

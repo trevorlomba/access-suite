@@ -97,16 +97,6 @@
   font-size: 1rem;
 }
 
-.file-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.file-button:has(+ input:focus-visible) {
-  outline: 4px solid var(--focus);
-  outline-offset: 3px;
-}
 
 .tool-header__tools {
   display: flex;

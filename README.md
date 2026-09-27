@@ -87,6 +87,18 @@ tradeoffs:
   are loaded; there is a one-click "Forget my key"; the docs recommend a key
   with a spending limit.
 
+### Offline, install, backup
+
+- `scripts/assemble-site.mjs` generates `dist/sw.js` from `scripts/sw-template.js`.
+  It precaches every built file under a content-hash version. Pages are
+  network-first with a 3-second timeout, falling back to cache. Assets are
+  cache-first. Other origins, like the AI providers, are never intercepted.
+- Each tool gets its own `manifest.webmanifest`, so the Phrase Board can be
+  installed by itself on a tablet.
+- Settings → **Your data** downloads or restores every `access-suite:*` item in
+  one JSON file. The AI key is never exported, and restoring never overwrites
+  the key on the current device.
+
 ## Deploy
 
 `.github/workflows/pages.yml` builds the assembled site (`dist/`). Deployment

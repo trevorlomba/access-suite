@@ -94,6 +94,14 @@ export function App() {
               to us — there is no “us” server.
             </li>
             <li>
+              <strong>Works offline.</strong> After your first visit, every tool keeps working without a connection.
+              Add a tool to your home screen to use it like an app.
+            </li>
+            <li>
+              <strong>Back it up.</strong> Settings → Your data downloads everything in one file, so a browser reset
+              or a new tablet doesn’t lose your phrases.
+            </li>
+            <li>
               <strong>Every way of selecting.</strong> Touch, mouse, keyboard, one or two switches, and dwell for head
               pointers and eye gaze. Choose in Settings.
             </li>
