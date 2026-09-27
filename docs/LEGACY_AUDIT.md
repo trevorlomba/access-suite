@@ -88,20 +88,14 @@ Bootcamp-era; no accessibility functionality. Not reused.
 | No tests, no licenses | Unit + E2E + axe in CI; MIT |
 | Touch-only interaction | Switch scan, dwell, keyboard first-class |
 
-## ⚠️ Privacy finding — action recommended (not taken)
+## Data and secrets
 
-Two **public** repos contain what appears to be a real person's personal data:
-
-- `accessible-language-generation`: `MessageBank.json`, `transcripts.csv`,
-  `training_data*.jsonl`, `words.db` — derived from voice-banking recordings,
-  including intimate care phrases.
-- `accessible-language-generation` and `gpt-access-client`: `names.json` — real
-  first names ranked by frequency.
-
-No API keys or secrets were found in any repo or its history.
-
-**Recommendation:** make both repos private now (fast, reversible). If they
-should stay public as portfolio history, remove the files *and* rewrite history
-(`git filter-repo --path <file> --invert-paths`) then force-push, since deleting
-in a new commit leaves them in history. Nothing in access-suite contains or
-derives from this data.
+- No API keys or secrets were found in any repo or its history.
+- The phrase banks, transcripts, training files and `names.json` in
+  `accessible-language-generation` and `gpt-access-client` are **synthetic
+  test data** written for development (confirmed by the author). Real user
+  vocabulary was only ever kept in a private fork and is never committed to
+  any public repo.
+- access-suite follows the same rule: the starter vocabulary is generic, and
+  personal vocabulary is loaded on-device through the
+  [Vocabulary Builder](tools/vocabulary-builder.md), never committed.

@@ -23,9 +23,9 @@ the sentence.
 - Flask backend on Heroku calling `text-davinci-003`, with pronoun-set handling
   ("we/us/ours") so sentences came out in the right voice.
 
-**What broke:** Heroku's free tier ended; davinci was retired. The personal
-data lived in the repo, which was fine for one family and wrong for a
-public project.
+**What broke:** Heroku's free tier ended; davinci was retired. And the
+personalization only worked for one person: the real vocabulary had to live in
+a private fork, because a public tool can't ship anyone's words.
 
 ## Generation 2: speech-assist (2024)
 
