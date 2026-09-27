@@ -7,8 +7,10 @@ import { freqScale, type Frequencies } from '../state';
 function useColumns(): number {
   const { settings } = useSettings();
   const calc = () => {
-    const width = Math.min(window.innerWidth, 1200) - 32;
-    return Math.max(2, Math.min(8, Math.floor(width / (settings.targetSize * 1.9))));
+    // Board width: page minus gutters, minus the saved-phrases sidebar on wide screens (see app.css).
+    const page = Math.min(window.innerWidth, 1400);
+    const width = page - 32 - (window.innerWidth >= 1000 ? 320 : 0);
+    return Math.max(2, Math.min(8, Math.floor(width / (settings.targetSize * 1.75))));
   };
   const [cols, setCols] = useState(calc);
   useEffect(() => {

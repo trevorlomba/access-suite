@@ -148,7 +148,7 @@ export function SettingsPanel({ showAi = true }: { showAi?: boolean }) {
             <>
               <Field
                 label="API key"
-                help={provider.keyUrl ? `Create one at ${provider.keyUrl.replace('https://', '')}. Usage is billed to your account.` : undefined}
+                help={provider.keyUrl ? `Create one at ${provider.keyUrl.replace('https://', '')}. Usage is billed to your account — we suggest setting a monthly spending limit on the key.` : undefined}
               >
                 {(id) => (
                   <input id={id} type="password" autoComplete="off" spellCheck={false} placeholder={provider.keyHint}

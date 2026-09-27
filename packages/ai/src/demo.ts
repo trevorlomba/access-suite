@@ -1,5 +1,9 @@
 import type { Adapter, Intent } from './types';
 
+const FUNCTION_WORDS = new Set(
+  'i|you|we|he|she|they|it|me|my|your|want|need|like|have|get|can|is|am|are|do|please|to'.split('|'),
+);
+
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const TEMPLATES: Record<Intent, ((p: string) => string)[]> = {
@@ -17,6 +21,9 @@ const TEMPLATES: Record<Intent, ((p: string) => string)[]> = {
 export const demoAdapter: Adapter = async (_cfg, _prompt, req, signal) => {
   await new Promise((r) => setTimeout(r, 250));
   if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
-  const phrase = req.words.join(' ').trim() || 'that';
+  // Templates supply their own "I / can I have", so drop pronouns and helper
+  // verbs: "I want water" → "water" → "Can I have water?".
+  const content = req.words.filter((w) => !FUNCTION_WORDS.has(w.toLowerCase()));
+  const phrase = (content.length ? content : req.words).join(' ').trim() || 'that';
   return JSON.stringify(TEMPLATES[req.intent].map((t) => t(phrase)));
 };

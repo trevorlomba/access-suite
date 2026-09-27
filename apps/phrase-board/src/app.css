@@ -172,8 +172,8 @@
 }
 
 .word-tile {
-  word-break: break-word;
-  hyphens: auto;
+  padding: 4px 6px;
+  overflow-wrap: anywhere; /* only when a single word can't fit at all */
   line-height: 1.1;
 }
 
