@@ -12,6 +12,7 @@
   "dependencies": {
     "@access-suite/access-ui": "*",
     "@access-suite/ai": "*",
+    "@access-suite/vocab": "*",
     "compromise": "^14.14.0"
   },
   "peerDependencies": {

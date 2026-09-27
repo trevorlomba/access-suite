@@ -13,7 +13,9 @@ import {
   tone,
   useAiConfig,
   useFrequencies,
+  useMyVocabulary,
   useSavedPhrases,
+  vocabCategory,
   wordsStartingWith,
   type Word,
 } from '@access-suite/board';
@@ -25,9 +27,14 @@ export function App() {
   const { freq, record } = useFrequencies();
   const { saved, add: savePhrase, remove: removePhrase } = useSavedPhrases();
 
+  // Personal vocabulary from the Vocabulary Builder, shown first when present.
+  const myVocab = useMyVocabulary();
+  const mine = vocabCategory(myVocab);
+  const categories = mine ? [mine, ...CATEGORIES] : CATEGORIES;
+
   const [tokens, dispatch] = useReducer(messageReducer, []);
   const [selected, setSelected] = useState<number | null>(null);
-  const [view, setView] = useState<View>({ kind: 'category', id: CATEGORIES[0]!.id });
+  const [view, setView] = useState<View>({ kind: 'category', id: categories[0]!.id });
   const [typing, setTyping] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [announcement, setAnnouncement] = useState('');
@@ -47,7 +54,9 @@ export function App() {
   };
 
   const words = tokens.map((t) => t.text);
-  const current = view.kind === 'category' ? CATEGORIES.find((c) => c.id === view.id) : undefined;
+  const current =
+    view.kind === 'category' ? (categories.find((c) => c.id === view.id) ?? categories[0]) : undefined;
+  const myPhrases = current?.id === 'mine' ? (myVocab?.phrases ?? []) : [];
 
   return (
     <div className="tool">
@@ -100,8 +109,8 @@ export function App() {
             </ScanGroup>
 
             <ScanGroup label="Word categories" className="tabs">
-              {CATEGORIES.map((c) => {
-                const active = view.kind === 'category' && view.id === c.id;
+              {categories.map((c) => {
+                const active = current?.id === c.id;
                 return (
                   <BigButton
                     key={c.id}
@@ -125,7 +134,17 @@ export function App() {
               </BigButton>
             </ScanGroup>
 
-            {current && <WordRows words={current.words} label={`${current.label} words`} freq={freq} onPick={addWord} />}
+            {myPhrases.length > 0 && (
+              <ScanGroup label="My phrases" className="phrases">
+                {myPhrases.map((p) => (
+                  <BigButton key={p.text} className="phrase" onClick={() => addWord(p.text)}>
+                    {p.text}
+                  </BigButton>
+                ))}
+              </ScanGroup>
+            )}
+
+            {current && <WordRows words={current.words} label={current.id === 'mine' ? 'My words' : `${current.label} words`} freq={freq} onPick={addWord} />}
 
             {view.kind === 'letters' && (
               <div className="letters" role="group" aria-label="Find a word by its first letter">
@@ -149,7 +168,7 @@ export function App() {
                   </BigButton>
                 </ScanGroup>
                 <WordRows
-                  words={wordsStartingWith(view.letter)}
+                  words={wordsStartingWith(view.letter, mine?.words)}
                   label={`Words starting with ${view.letter.toUpperCase()}`}
                   freq={freq}
                   onPick={addWord}

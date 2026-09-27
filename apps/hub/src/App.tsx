@@ -23,8 +23,9 @@ const TOOLS: Tool[] = [
   },
   {
     name: 'Vocabulary Builder',
-    status: 'planned',
-    blurb: 'Turn your own messages and transcripts into a personal word list, processed entirely on your device.',
+    status: 'available',
+    blurb: 'Turn your own messages and transcripts into a personal word list, processed entirely on your device. Your words then appear in the other tools.',
+    href: './vocabulary-builder/',
   },
   {
     name: 'Dwell Panels',

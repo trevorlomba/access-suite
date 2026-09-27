@@ -1,6 +1,6 @@
 # Vocabulary Builder
 
-**Status:** Spec · reimagines the `accessible-language-generation` data pipeline
+**Status:** MVP built · `apps/vocabulary-builder` + `packages/vocab` · reimagines the `accessible-language-generation` data pipeline
 
 A starter vocabulary is generic. A person's *own* words — names of family, the
 nurse, their dog, their favorite team — are what make an AAC board fast. The

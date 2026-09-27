@@ -37,10 +37,6 @@
   font-size: 1.3rem;
 }
 
-.phrases .phrase {
-  flex: 1 1 180px;
-}
-
 .partner-form {
   display: grid;
   gap: 10px;

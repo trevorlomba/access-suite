@@ -161,6 +161,10 @@
   flex: 1 1 110px;
 }
 
+.phrases .phrase {
+  flex: 1 1 180px;
+}
+
 .word-rows,
 .letters {
   display: grid;

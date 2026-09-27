@@ -52,7 +52,7 @@ link.**
 |---|---|---|---|
 | 1 | [Phrase Board](tools/phrase-board.md) | **MVP built** | Tap or scan words into a sentence, speak it, optionally let AI expand it |
 | 2 | [Listen & Reply](tools/listen-and-reply.md) | **MVP built** | Transcribe what someone says to you, turn it into word buttons, reply in a few taps |
-| 3 | [Vocabulary Builder](tools/vocabulary-builder.md) | Spec | Turn your own texts/transcripts into a personal, frequency-ranked vocabulary — in-browser |
+| 3 | [Vocabulary Builder](tools/vocabulary-builder.md) | **MVP built** | Turn your own texts/transcripts into a personal, frequency-ranked vocabulary — in-browser |
 | 4 | [Dwell Panels](tools/dwell-panels.md) | Spec | Build custom dwell/scan button panels that speak phrases or send keystrokes |
 | 5 | [Mac Toolkit](tools/mac-toolkit.md) | Spec (later) | Documented Keyboard Maestro + Accessibility Keyboard panels; possible SwiftUI menu-bar app |
 

@@ -96,12 +96,40 @@ that every tile color meets WCAG AAA (7:1) against its text.
 
 ### Results so far
 
-- Phrase Board MVP: 33 unit tests and 41 E2E/axe checks passing locally.
+- Three tools shipped as MVPs: Phrase Board, Listen & Reply, Vocabulary
+  Builder. 70 unit tests and 67 E2E/axe checks pass.
 - Initial JS is about 57 KB gzipped for the board; the Anthropic SDK (about
   49 KB gzipped) loads only if the user turns AI on.
 
+### Listen & Reply: Generation 2, rebuilt
+
+The 2024 idea (reply using the partner's words) on the new foundation. The
+phrase-recognition module was ported to a tested `board/transcript`. Because
+browser speech recognition rarely adds punctuation, questions are detected
+from the first word ("do you…", "are you…"), and a yes/no question gets
+one-tap Yes / No / Maybe replies. If the partner keeps talking, a reply in
+progress is kept.
+
+### Vocabulary Builder: the data pipeline, made private
+
+Personalization was what made Generation 1 fast, and what kept it private to
+one family. The Vocabulary Builder rebuilds that pipeline so anyone can run it
+on their own data without it leaving the device:
+
+```
+parse (stg) → tag (int) → aggregate (int) → phrases (int) → rank (mart) → human review → export
+```
+
+- Each stage is a pure, unit-tested function, organized like a dbt project.
+- It runs in a Web Worker so large inputs don't block the page.
+- Multi-word names are merged back together ("Red Sox", "Dr Patel").
+- Words already on the starter board are skipped, and phrases made only of
+  board words ("I want") are dropped.
+- Output is a versioned, validated JSON file. The Phrase Board and Listen &
+  Reply read it as a "My words" category.
+- An E2E test fails if any network request leaves the site during processing.
+
 ## What's next
 
-Listen & Reply (Generation 2's idea on Generation 3's foundation), then the
-Vocabulary Builder: the 2023 voice-banking pipeline rebuilt as an in-browser,
-privacy-preserving tokenize → rank → review → export flow.
+Dwell Panels (custom big-button layouts, sharing the input layer), the Mac
+Toolkit release, and offline install (PWA).

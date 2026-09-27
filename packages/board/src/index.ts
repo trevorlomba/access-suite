@@ -6,3 +6,4 @@ export { Suggestions } from './Suggestions';
 export { SavedPhrases } from './SavedPhrases';
 export { WordRows, tone } from './WordRows';
 export { useAiConfig } from './useAiConfig';
+export { useMyVocabulary, loadMyVocabulary, vocabCategory } from './myWords';

@@ -46,6 +46,16 @@ const STATES: { name: string; path: string; settings?: Record<string, unknown>; 
       await page.getByRole('group', { name: 'Suggested sentences' }).waitFor();
     },
   },
+  { name: 'vocabulary builder', path: 'vocabulary-builder/' },
+  {
+    name: 'vocabulary builder review',
+    path: 'vocabulary-builder/',
+    act: async (page) => {
+      await page.getByRole('button', { name: 'Use sample text' }).click();
+      await page.getByRole('button', { name: 'Find words' }).click();
+      await page.getByRole('heading', { name: '2. Review' }).waitFor();
+    },
+  },
   {
     name: 'letter search',
     path: 'phrase-board/',
@@ -71,7 +81,7 @@ for (const state of STATES) {
 test('no horizontal scrolling at phone width', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   await prepare(page);
-  for (const path of ['./', 'phrase-board/', 'listen-reply/']) {
+  for (const path of ['./', 'phrase-board/', 'listen-reply/', 'vocabulary-builder/']) {
     await page.goto(path);
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     expect(overflow, path).toBeLessThanOrEqual(0);

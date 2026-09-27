@@ -20,12 +20,15 @@ import {
   tone,
   useAiConfig,
   useFrequencies,
+  useMyVocabulary,
   useSavedPhrases,
+  vocabCategory,
   type Word,
 } from '@access-suite/board';
 import { analyzeUtterance, quickReplies, type Utterance } from '@access-suite/board/transcript';
 
 const HISTORY = 6;
+const MY_WORDS_SHOWN = 24;
 const CORE = CATEGORIES.find((c) => c.id === 'core')!.words;
 
 const KIND_LABEL: Record<Utterance['kind'], string> = {
@@ -40,6 +43,7 @@ export function App() {
   const { freq, record } = useFrequencies();
   const { saved, add: savePhrase, remove: removePhrase } = useSavedPhrases();
   const aiConfig = useAiConfig();
+  const mine = vocabCategory(useMyVocabulary());
 
   const [history, setHistory] = useState<Utterance[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -220,9 +224,18 @@ export function App() {
             </section>
           )}
 
-          <section className="board" aria-labelledby="my-words-heading">
-            <h2 id="my-words-heading" className="section-title">
-              My words
+          {mine && (
+            <section className="board" aria-labelledby="my-words-heading">
+              <h2 id="my-words-heading" className="section-title">
+                My words
+              </h2>
+              <WordRows words={mine.words.slice(0, MY_WORDS_SHOWN)} label="My words" freq={freq} onPick={addWord} />
+            </section>
+          )}
+
+          <section className="board" aria-labelledby="more-words-heading">
+            <h2 id="more-words-heading" className="section-title">
+              More words
             </h2>
             <ScanGroup label="Pronouns" className="pronouns">
               {PRONOUNS.map((p) => (
@@ -233,7 +246,7 @@ export function App() {
             </ScanGroup>
             <ScanGroup label="Show core words">
               <BigButton variant="quiet" aria-expanded={showCore} onClick={() => setShowCore((s) => !s)}>
-                {showCore ? 'Hide core words' : 'More words'}
+                {showCore ? 'Hide core words' : 'Show core words'}
               </BigButton>
             </ScanGroup>
             {showCore && <WordRows words={CORE} label="Core words" freq={freq} onPick={addWord} />}

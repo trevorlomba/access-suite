@@ -1,0 +1,252 @@
+.builder {
+  max-width: 900px;
+}
+
+.lede {
+  font-size: 1.15rem;
+  max-width: 60ch;
+  margin: 0 0 8px;
+}
+
+.privacy {
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+
+.card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* let children shrink below their min-content (file inputs) */
+  gap: 12px;
+}
+
+.card h2 {
+  font-size: 1.3rem;
+}
+
+.card h2:focus {
+  outline: none;
+}
+
+.card h2:focus-visible {
+  outline: 4px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.card p {
+  margin: 0;
+}
+
+.builder .field {
+  display: grid;
+  gap: 6px;
+}
+
+.builder .field label {
+  font-weight: 700;
+}
+
+.field--inline {
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
+}
+
+.builder textarea,
+.builder input[type='text'],
+.builder input[type='search'],
+.builder select {
+  font: inherit;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  max-width: 100%;
+}
+
+.builder textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+.builder input[type='file']:not(.visually-hidden) {
+  font: inherit;
+  width: 100%;
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.actions .big-btn,
+.builder .tool-header__tools .big-btn {
+  min-height: 56px;
+  font-size: 1rem;
+}
+
+.file-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-button:has(+ input:focus-visible) {
+  outline: 4px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.tool-header__tools {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.file-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid var(--surface-2);
+  border-radius: 10px;
+  padding: 4px 4px 4px 12px;
+  overflow-wrap: anywhere;
+}
+
+.file-list .big-btn {
+  min-height: 44px;
+  min-width: 0;
+}
+
+.options {
+  border: 2px solid var(--surface-2);
+  border-radius: 14px;
+  padding: 10px 14px 14px;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.options legend,
+.phrase-list legend {
+  font-weight: 700;
+  padding: 0 6px;
+}
+
+.builder .check {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.builder .check input,
+.review-table input[type='checkbox'] {
+  width: 24px;
+  height: 24px;
+  accent-color: var(--primary);
+}
+
+.status {
+  min-height: 1.4em;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.review-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.review-tools .big-btn {
+  min-height: 44px;
+}
+
+.review-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.review-table th {
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--muted);
+  padding: 4px 6px;
+  border-bottom: 2px solid var(--surface-2);
+}
+
+.review-table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--surface-2);
+  vertical-align: middle;
+}
+
+.review-table td input[type='text'] {
+  width: 100%;
+  min-width: 6ch;
+}
+
+.review-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.review-table tr.dropped td {
+  opacity: 0.55;
+}
+
+.review-table tr.dropped td:first-child {
+  opacity: 1;
+}
+
+.phrase-list {
+  border: 2px solid var(--surface-2);
+  border-radius: 14px;
+  padding: 10px 14px 14px;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.add-word {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: end;
+}
+
+.add-word .big-btn {
+  min-height: 44px;
+}
+
+@media (max-width: 520px) {
+  .review-table th:nth-child(3),
+  .review-table td:nth-child(3) {
+    display: none;
+  }
+  .review-table select {
+    width: 100%;
+  }
+}

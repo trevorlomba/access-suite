@@ -11,6 +11,7 @@ const APPS = [
   { from: 'apps/hub/dist', to: '.' },
   { from: 'apps/phrase-board/dist', to: 'phrase-board' },
   { from: 'apps/listen-reply/dist', to: 'listen-reply' },
+  { from: 'apps/vocabulary-builder/dist', to: 'vocabulary-builder' },
 ];
 
 rmSync(out, { recursive: true, force: true });

@@ -60,7 +60,7 @@ describe('Listen & Reply', () => {
     renderApp();
     await partnerSays(user, 'What would you like for dinner');
     await user.click(within(screen.getByRole('group', { name: 'Pronouns' })).getByRole('button', { name: 'I' }));
-    await user.click(screen.getByRole('button', { name: 'More words' }));
+    await user.click(screen.getByRole('button', { name: 'Show core words' }));
     await user.click(screen.getByRole('button', { name: 'want' }));
     const theirs = screen.getByRole('group', { name: 'Their words' });
     await user.click(within(theirs).getByRole('button', { name: 'dinner' }));
