@@ -1,0 +1,203 @@
+.pb {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 12px 16px 32px;
+}
+
+.pb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.pb-header h1 {
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.pb-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+
+@media (min-width: 1000px) {
+  .pb-main {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    align-items: start;
+  }
+  .pb-side {
+    position: sticky;
+    top: 12px;
+  }
+}
+
+.pb-compose {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 2px solid var(--border);
+  vertical-align: middle;
+}
+
+.error {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+/* ---- Sentence bar ---- */
+.sentence {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.sentence__display {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+}
+
+.sentence__placeholder {
+  margin: 0 8px;
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+
+.sentence__words .chip {
+  font: inherit;
+  font-size: 1.6rem;
+  font-weight: 700;
+  min-height: 56px;
+  padding: 4px 14px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.sentence__words .chip[aria-pressed='true'] {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary) inset;
+}
+
+.sentence__actions .speak-btn {
+  flex: 2 1 180px;
+  font-size: 1.35rem;
+}
+
+.sentence__actions .big-btn,
+.sentence__edit .big-btn {
+  flex: 1 1 120px;
+}
+
+/* ---- Suggestions ---- */
+.suggest {
+  display: grid;
+  gap: 6px;
+}
+
+.suggest__intents .big-btn {
+  flex: 1 1 110px;
+}
+
+.suggest__status {
+  min-height: 1.5em;
+  padding: 0 4px;
+}
+
+.suggestion {
+  text-align: left;
+  font-size: 1.3rem;
+  width: 100%;
+}
+
+/* ---- Board ---- */
+.board {
+  display: grid;
+  gap: 10px;
+}
+
+.pronouns .big-btn {
+  flex: 1 1 calc(var(--target) * 1.1);
+}
+
+.tabs .tab {
+  flex: 1 1 110px;
+}
+
+.word-rows,
+.letters {
+  display: grid;
+  gap: 2px;
+}
+
+.word-row {
+  display: grid;
+}
+
+.word-tile {
+  word-break: break-word;
+  hyphens: auto;
+  line-height: 1.1;
+}
+
+.letter-row .big-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 1.4rem;
+}
+
+/* ---- Saved ---- */
+.saved {
+  display: grid;
+  gap: 8px;
+}
+
+.saved__phrase {
+  text-align: left;
+}
+
+@media (max-width: 520px) {
+  .pb {
+    padding: 8px 12px 24px;
+  }
+  .sentence__words .chip {
+    font-size: 1.3rem;
+  }
+}
