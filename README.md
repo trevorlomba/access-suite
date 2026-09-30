@@ -84,8 +84,10 @@ tradeoffs:
 - ✅ The key is never sent to anyone but the provider the user chose.
 - ⚠️ The key lives in `localStorage`, so anything that can run script on this
   origin could read it. Mitigations: no third-party scripts, fonts or analytics
-  are loaded; there is a one-click "Forget my key"; the docs recommend a key
-  with a spending limit.
+  are loaded, and the built site's Content Security Policy enforces that
+  (scripts only from this site; network requests only to this site and the two
+  AI providers; E2E fails on any violation); there is a one-click "Forget my
+  key"; the docs recommend a key with a spending limit.
 
 ### Offline, install, backup
 
@@ -93,6 +95,8 @@ tradeoffs:
   It precaches every built file under a content-hash version. Pages are
   network-first with a 3-second timeout, falling back to cache. Assets are
   cache-first. Other origins, like the AI providers, are never intercepted.
+  The two previous versions' caches are kept, so a tool left open across a
+  deploy can still load the files it was built with.
 - Each tool gets its own `manifest.webmanifest`, so the Phrase Board can be
   installed by itself on a tablet.
 - Settings → **Your data** downloads or restores every `access-suite:*` item in

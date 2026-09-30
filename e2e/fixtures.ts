@@ -47,5 +47,23 @@ export async function tabTo(page: Page, text: string, reverse = false, max = 80)
   throw new Error(`Could not Tab to "${text}"`);
 }
 
-export const test = base;
+/**
+ * Every test fails if the browser refuses anything under the site's Content
+ * Security Policy (Chromium reports refusals as console errors, which also
+ * catches ones on pages the test has since left). A test that triggers one on
+ * purpose asserts on `cspViolations` and then empties it.
+ */
+export const test = base.extend<{ cspViolations: string[] }>({
+  cspViolations: [
+    async ({ page }, use) => {
+      const seen: string[] = [];
+      page.on('console', (msg) => {
+        if (msg.type() === 'error' && msg.text().includes('Content Security Policy')) seen.push(msg.text());
+      });
+      await use(seen);
+      expect(seen, 'Content Security Policy violations').toEqual([]);
+    },
+    { auto: true },
+  ],
+});
 export { expect };
