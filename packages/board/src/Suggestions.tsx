@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { BigButton, ScanGroup } from '@access-suite/access-ui';
+import { BigButton } from '@access-suite/access-ui';
+import { TileGrid } from './WordRows';
 import { AiError, INTENTS, generate, type Intent, type ProviderConfig } from '@access-suite/ai';
 
 type Status = { kind: 'idle' } | { kind: 'loading'; intent: Intent } | { kind: 'error'; message: string };
@@ -13,12 +14,15 @@ export function Suggestions({
   words,
   context,
   onChoose,
+  onBack,
 }: {
   config: ProviderConfig;
   words: string[];
   /** What was just said to the user; lets suggestions answer it, even before any word is picked. */
   context?: string;
   onChoose: (sentence: string) => void;
+  /** Return to the word board (the panel takes the board's place while open). */
+  onBack?: () => void;
 }) {
   const [results, setResults] = useState<string[]>([]);
   const [status, setStatus] = useState<Status>({ kind: 'idle' });
@@ -49,38 +53,55 @@ export function Suggestions({
 
   return (
     <section className="suggest" aria-labelledby="suggest-heading">
-      <h2 id="suggest-heading" className="section-title">
-        Make it a sentence {config.provider === 'demo' && <span className="badge">demo</span>}
+      <h2 id="suggest-heading" className="visually-hidden">
+        Make it a sentence
       </h2>
-      <ScanGroup label="Make it a sentence: choose a type" className="suggest__intents">
-        {INTENTS.map((i) => (
-          <BigButton
-            key={i.id}
-            onClick={() => run(i.id)}
-            disabled={disabled}
-            aria-pressed={status.kind === 'loading' && status.intent === i.id}
-          >
+      <TileGrid
+        items={INTENTS}
+        label="Make it a sentence: choose a type"
+        name={(i) => i.label}
+        fill={false}
+        maxRows={2}
+        lead={
+          onBack
+            ? [
+                <BigButton key="back" variant="quiet" onClick={onBack}>
+                  ◀ Words
+                </BigButton>,
+              ]
+            : []
+        }
+        render={(i) => (
+          <BigButton onClick={() => run(i.id)} disabled={disabled} aria-pressed={status.kind === 'loading' && status.intent === i.id}>
             {i.label}
           </BigButton>
-        ))}
-      </ScanGroup>
+        )}
+      />
       <div aria-live="polite" className="suggest__status">
+        {config.provider === 'demo' && <span className="badge">demo</span>}{' '}
         {disabled && <span className="muted">Pick a word or two first.</span>}
         {!disabled && words.length === 0 && status.kind === 'idle' && results.length === 0 && (
           <span className="muted">Choose a type to get replies, or pick words first to steer them.</span>
+        )}
+        {!disabled && words.length > 0 && status.kind === 'idle' && results.length === 0 && (
+          <span className="muted">Choose a type of sentence.</span>
         )}
         {status.kind === 'loading' && <span>Thinking…</span>}
         {status.kind === 'error' && <span className="error">{status.message}</span>}
         {results.length > 0 && <span className="visually-hidden">{results.length} suggestions ready.</span>}
       </div>
       {results.length > 0 && (
-        <ScanGroup label="Suggested sentences" layout="stack" className="suggest__results">
-          {results.map((s) => (
-            <BigButton key={s} className="suggestion" onClick={() => onChoose(s)}>
-              {s}
+        <TileGrid
+          items={results}
+          label="Suggested sentences"
+          name={(r) => r}
+          size="phrase"
+          render={(r) => (
+            <BigButton className="suggestion" onClick={() => onChoose(r)}>
+              {r}
             </BigButton>
-          ))}
-        </ScanGroup>
+          )}
+        />
       )}
     </section>
   );

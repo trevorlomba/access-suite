@@ -79,6 +79,7 @@ test.describe('Listen & Reply', () => {
     await page.getByRole('textbox').fill('The doctor is coming this afternoon');
     await page.getByRole('button', { name: 'Add' }).click();
     await expect(page.getByText('Statement')).toBeVisible();
-    await expect(page.getByRole('group', { name: 'Their phrases' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Their words', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByRole('button', { name: 'the doctor', exact: true })).toBeVisible();
   });
 });

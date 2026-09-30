@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
-import { expect, prepare, test } from './fixtures';
+import { expect, openTab, prepare, test } from './fixtures';
 
 async function seriousViolations(page: Page) {
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa']).analyze();
@@ -24,8 +24,9 @@ const STATES: { name: string; path: string; settings?: Record<string, unknown>; 
     settings: { aiProvider: 'demo', aiModel: 'demo' },
     act: async (page) => {
       await page.getByRole('button', { name: 'want', exact: true }).click();
+      await page.getByRole('button', { name: 'Make it a sentence' }).click();
       await page.getByRole('button', { name: 'Say it' }).click();
-      await page.getByRole('group', { name: 'Suggested sentences' }).waitFor();
+      await page.getByRole('group', { name: 'Suggested sentences', exact: true }).waitFor();
     },
   },
   {
@@ -42,8 +43,9 @@ const STATES: { name: string; path: string; settings?: Record<string, unknown>; 
       await page.getByRole('button', { name: /type what they said/i }).click();
       await page.getByRole('textbox').fill('Would you like the physical therapist to come back tomorrow?');
       await page.getByRole('button', { name: 'Add' }).click();
+      await page.getByRole('button', { name: 'Make it a sentence' }).click();
       await page.getByRole('button', { name: 'Say it' }).click();
-      await page.getByRole('group', { name: 'Suggested sentences' }).waitFor();
+      await page.getByRole('group', { name: 'Suggested sentences', exact: true }).waitFor();
     },
   },
   { name: 'vocabulary builder', path: 'vocabulary-builder/' },
@@ -60,8 +62,8 @@ const STATES: { name: string; path: string; settings?: Record<string, unknown>; 
     name: 'letter search',
     path: 'phrase-board/',
     act: async (page) => {
-      await page.getByRole('button', { name: 'A–Z' }).click();
-      await page.getByRole('button', { name: 'Words starting with s' }).click();
+      await openTab(page, 'A–Z');
+      await page.getByRole('button', { name: 'Words starting with b' }).click();
     },
   },
 ];

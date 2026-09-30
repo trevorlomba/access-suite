@@ -73,8 +73,17 @@ order, confines itself to the top-most dialog, skips disabled items, and backs
 out of a row after two unanswered loops. That keeps new tools accessible by
 default: there is no scan-order registry to forget to update.
 
-**Word grids are split into rows sized to the viewport**, so a switch user
-scans row → word (about √n steps) instead of stepping through every word.
+**Word grids are split into rows**, so a switch user scans row → word (about
+√n steps) instead of stepping through every word.
+
+**The boards fit one screen.** Dwell users can't scroll, and scrolling moves
+words out from under a switch user, so Phrase Board and Listen & Reply fill
+exactly the screen: header and message on top, the board takes the height
+left, sized from its own measured box. Tiles never shrink below the user's
+button size to make this work; a category that doesn't fit pages behind a
+"More" tile in the last cell. Category tabs run down the side on landscape
+screens, where width is spare, and across the top on portrait ones. Only when
+the screen can't hold even one row at the chosen size does the page scroll.
 
 **Colors follow the Modified Fitzgerald Key**, the AAC convention where yellow
 means people, green verbs, blue descriptors, and so on. A unit test checks
@@ -92,6 +101,9 @@ that every tile color meets WCAG AAA (7:1) against its text.
   - axe scans with zero serious or critical violations across 7 UI states ×
     light/dark, plus high contrast
   - no horizontal scroll at 360 px
+  - the boards fit one screen with no scrolling across six screen sizes,
+    button sizes from 48 to 120 px and their fullest states, with no button
+    below the user's size and no label cut off
 - All of it runs in CI on every PR.
 
 ### Results so far

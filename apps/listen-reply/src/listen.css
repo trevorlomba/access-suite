@@ -1,25 +1,48 @@
+/* What they said: one strip, so the board keeps the rest of the screen. */
 .heard {
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: 18px;
-  padding: 12px;
-  display: grid;
-  gap: 8px;
+  padding: 4px 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
 }
 
-.heard__controls .big-btn {
-  flex: 1 1 160px;
+.heard__controls.scan-group {
+  flex: 1 1 auto;
 }
 
 .heard__current {
-  min-height: 64px;
+  flex: 1 1 280px;
+  min-width: 0;
+  min-height: var(--target);
+  display: flex;
+  align-items: center;
+}
+
+/* The badge runs on after the text instead of taking a line of its own. */
+.heard__said {
+  margin: 0;
 }
 
 .heard__text {
-  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
   font-weight: 700;
-  margin: 4px 0 6px;
-  line-height: 1.25;
+  line-height: 1.2;
+  margin-right: 10px;
+}
+
+@media (max-width: 560px) {
+  .heard__text {
+    font-size: 1.15rem;
+  }
+}
+
+.heard__empty {
+  margin: 0;
+  font-size: 0.95rem;
 }
 
 .heard__interim {
@@ -32,9 +55,10 @@
   text-align: left;
 }
 
-.quick .quick__reply {
-  flex: 1 1 140px;
-  font-size: 1.3rem;
+.quick__reply {
+  font-size: 1rem;
+  line-height: 1.1;
+  padding-inline: 6px;
 }
 
 .partner-form {

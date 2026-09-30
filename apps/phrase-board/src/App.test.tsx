@@ -69,7 +69,8 @@ describe('Phrase Board', () => {
     renderApp();
     await user.click(screen.getByRole('button', { name: 'Social' }));
     await user.click(screen.getByRole('button', { name: 'good morning' }));
-    await user.click(screen.getByRole('button', { name: /save/i }));
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(screen.getByRole('button', { name: '★ Saved' }));
     const saved = screen.getByRole('group', { name: 'Saved phrases' });
     await user.click(within(saved).getByRole('button', { name: 'Good morning' }));
     expect(spoken).toEqual(['Good morning']);
@@ -93,10 +94,24 @@ describe('Phrase Board', () => {
     renderApp({ aiProvider: 'demo', aiModel: 'demo' });
     await user.click(screen.getByRole('button', { name: 'Needs' }));
     await user.click(screen.getByRole('button', { name: 'water' }));
+    await user.click(screen.getByRole('button', { name: 'Make it a sentence' }));
     await user.click(screen.getByRole('button', { name: 'Ask it' }));
     const choice = await screen.findByRole('button', { name: 'Can I have water?' });
     await user.click(choice);
     expect(spoken).toEqual(['Can I have water?']);
+    await user.click(screen.getByRole('button', { name: '◀ Words' }));
+    expect(screen.getByRole('button', { name: 'water' })).toBeInTheDocument();
+  });
+
+  it('shows word editing in place of the message actions', async () => {
+    const user = userEvent.setup();
+    renderApp();
+    await user.click(screen.getByRole('button', { name: 'want' }));
+    expect(screen.getByRole('group', { name: 'Message actions' })).toBeInTheDocument();
+    await user.click(within(message()!).getByRole('button', { name: /^want,/ }));
+    expect(screen.queryByRole('group', { name: 'Message actions' })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Done' }));
+    expect(screen.getByRole('group', { name: 'Message actions' })).toBeInTheDocument();
   });
 
   it('adds a typed word from the on-screen keyboard', async () => {

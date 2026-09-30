@@ -34,6 +34,25 @@ export const spoken = (page: Page) => page.evaluate(() => (window as unknown as 
 export const messageWords = (page: Page) =>
   page.getByRole('group', { name: /message words/i }).getByRole('button').allTextContents();
 
+/** Wait for fonts to load and the boards to measure themselves and re-render. */
+export async function settle(page: Page) {
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    for (let i = 0; i < 3; i++) await new Promise(requestAnimationFrame);
+  });
+}
+
+/** Open a word category, paging through "More categories" where the tabs don't all fit (phones). */
+export async function openTab(page: Page, name: string) {
+  await settle(page);
+  const tab = page.getByRole('group', { name: 'Word categories' }).getByRole('button', { name, exact: true });
+  for (let i = 0; i < 12 && !(await tab.isVisible()); i++) {
+    await page.getByRole('button', { name: /^More categories/ }).click();
+    await settle(page);
+  }
+  await tab.click();
+}
+
 /** Press Tab (or Shift+Tab) until the focused element has the given accessible text. */
 export async function tabTo(page: Page, text: string, reverse = false, max = 80) {
   for (let i = 0; i < max; i++) {

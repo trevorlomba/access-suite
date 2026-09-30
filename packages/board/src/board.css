@@ -27,29 +27,6 @@
   text-decoration: none;
 }
 
-.tool-main {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 20px;
-}
-
-@media (min-width: 1000px) {
-  .tool-main {
-    grid-template-columns: minmax(0, 1fr) 300px;
-    align-items: start;
-  }
-  .tool-side {
-    position: sticky;
-    top: 12px;
-  }
-}
-
-.tool-compose {
-  display: grid;
-  gap: 16px;
-  min-width: 0;
-}
-
 .section-title {
   font-size: 1.15rem;
   margin-bottom: 6px;
@@ -76,33 +53,195 @@
   font-weight: 700;
 }
 
+/* ---- One-screen tools ----
+ * The communication boards fill exactly the screen: header and message on
+ * top, the board takes whatever height is left, and the page itself doesn't
+ * scroll. Buttons never shrink below the user's button size to make this
+ * work; the board pages instead. Only if the screen can't hold even that
+ * (a very large button size on a small screen) does the page scroll. */
+.tool--fit {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.tool--fit > * {
+  flex: none;
+}
+
+.tool--fit .tool-header {
+  margin: 0;
+}
+
+.tool--fit .tool-header h1 {
+  font-size: 1.3rem;
+}
+
+.tool--fit .tool-header__tools {
+  flex: 0 1 auto;
+  padding: 0;
+}
+
+/* ---- Board area: strips, category tabs, and the board ----
+ * The board never gets less than a full row of tiles; if the screen can't
+ * spare that, the page scrolls rather than the board paging one tile at a time. */
+.tool--fit > .board-area {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.board-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.board-area__body {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  gap: 8px;
+}
+
+.board-area__body--top {
+  flex-direction: column;
+  gap: 4px;
+}
+
+.board-area__main {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: calc(var(--target) + 8px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rail {
+  flex: none;
+  min-height: calc(var(--target) + 8px);
+}
+
+.rail__tabs.scan-group {
+  display: grid;
+}
+
+.rail--side .rail__tabs {
+  grid-auto-flow: column;
+  align-content: start;
+}
+
+.rail .tab {
+  min-width: 0;
+  padding: 4px 8px;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+  line-height: 1.1;
+}
+
+/* ---- Tile grids ---- */
+.tiles {
+  display: grid;
+  gap: 2px;
+}
+
+.tiles--fill {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.scan-group.tile-row {
+  display: grid;
+}
+
+.tile-row > .big-btn {
+  padding-inline: 8px;
+}
+
+.word-tile,
+.phrase-tile {
+  padding: 4px 6px;
+  overflow-wrap: anywhere; /* only when a single word can't fit at all */
+  line-height: 1.1;
+}
+
+.phrase-tile {
+  font-size: 1.05rem;
+}
+
+.letter-tile {
+  font-size: 1.4rem;
+}
+
+.tile-more.big-btn {
+  padding: 2px 6px;
+  line-height: 1.1;
+}
+
+.tile-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.tile-more__page {
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
 /* ---- Sentence bar ---- */
 .sentence {
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: 18px;
-  padding: 12px;
-  display: grid;
-  gap: 10px;
+  padding: 4px 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
 }
 
+/* One line that scrolls sideways within itself, newest word in view. */
 .sentence__display {
-  min-height: 72px;
+  flex: 1 1 200px;
+  min-width: 0;
+  min-height: calc(var(--target) + 8px);
   display: flex;
   align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.sentence__display > .tiles {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sentence__words.scan-group {
+  flex-wrap: nowrap;
 }
 
 .sentence__placeholder {
   margin: 0 8px;
   color: var(--muted);
-  font-size: 1.2rem;
+  font-size: 1.05rem;
+  line-height: 1.2;
 }
 
 .sentence__words .chip {
+  flex: none;
   font: inherit;
   font-size: 1.6rem;
   font-weight: 700;
-  min-height: 56px;
+  white-space: nowrap;
+  min-height: var(--target);
+  min-width: var(--target);
   padding: 4px 14px;
   border-radius: 12px;
   border: 2px solid transparent;
@@ -116,24 +255,37 @@
   box-shadow: 0 0 0 3px var(--primary) inset;
 }
 
-.sentence__actions .speak-btn {
-  flex: 2 1 180px;
-  font-size: 1.35rem;
+.sentence__speak.scan-group {
+  flex: none;
 }
 
+.speak-btn {
+  font-size: 1.3rem;
+}
+
+.sentence__actions.scan-group {
+  flex: 0 1 auto;
+  justify-content: flex-end;
+}
+
+/* Rows of controls: each button is as wide as its label (never clipped),
+ * sharing any spare width, and they wrap onto another row only when the
+ * labels don't fit side by side. */
 .sentence__actions .big-btn,
-.sentence__edit .big-btn {
-  flex: 1 1 120px;
+.tool--fit .tool-header__tools > *,
+.heard__controls .big-btn {
+  flex: 1 1 auto;
+  white-space: nowrap;
+  padding-inline: 10px;
 }
 
-/* ---- Suggestions ---- */
+/* ---- Suggestions (in place of the board while open) ---- */
 .suggest {
-  display: grid;
-  gap: 6px;
-}
-
-.suggest__intents .big-btn {
-  flex: 1 1 110px;
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .suggest__status {
@@ -142,66 +294,43 @@
 }
 
 .suggestion {
-  text-align: left;
-  font-size: 1.3rem;
-  width: 100%;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
-/* ---- Board ---- */
-.board {
-  display: grid;
-  gap: 10px;
-}
-
-.pronouns .big-btn {
-  flex: 1 1 calc(var(--target) * 1.1);
-}
-
-.tabs .tab {
-  flex: 1 1 110px;
-}
-
-.phrases .phrase {
-  flex: 1 1 180px;
-}
-
-.word-rows,
-.letters {
-  display: grid;
-  gap: 2px;
-}
-
-.word-row {
-  display: grid;
-}
-
-.word-tile {
-  padding: 4px 6px;
-  overflow-wrap: anywhere; /* only when a single word can't fit at all */
-  line-height: 1.1;
-}
-
-.letter-row .big-btn {
-  flex: 1 1 0;
-  min-width: 0;
-  font-size: 1.4rem;
-}
-
-/* ---- Saved ---- */
-.saved {
-  display: grid;
-  gap: 8px;
-}
-
-.saved__phrase {
-  text-align: left;
-}
-
-@media (max-width: 520px) {
+@media (max-width: 560px) {
   .tool {
     padding: 8px 12px 24px;
   }
+  .tool--fit {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+  /* The page title (and the tab title) still name the tool. */
+  .tool--fit .tool-header h1 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .tool--fit .tool-header__tools {
+    flex: 1 1 auto;
+  }
+  /* Icon-only labels on phones; the accessible names stay whole. */
+  .wide-only {
+    display: none;
+  }
+  .sentence__actions.scan-group {
+    flex: 1 1 auto;
+  }
   .sentence__words .chip {
     font-size: 1.3rem;
+  }
+  /* Quick replies get the whole row; the other buttons go below. */
+  .sentence__display:has(> .tiles) {
+    flex-basis: 100%;
   }
 }

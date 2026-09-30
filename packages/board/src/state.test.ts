@@ -9,6 +9,8 @@ describe('fitScale', () => {
     expect(fitScale('wonderful', 3)).toBeCloseTo(8 / 9);
     expect(fitScale('comfortable', 3)).toBe(0.75); // 8/11 is below the floor
     expect(fitScale('comfortable', 6)).toBeCloseTo(10 / 11);
+    expect(fitScale('the physical therapist', 6)).toBe(0.8);
+    expect(fitScale('pain relief', 6)).toBe(1);
   });
 });
 
