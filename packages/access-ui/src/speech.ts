@@ -12,9 +12,16 @@ export function speechSupported(): boolean {
   return typeof window !== 'undefined' && 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
 }
 
-/** Speak `text`, interrupting anything already speaking. Returns false if unsupported. */
-export function speak(text: string, opts: SpeakOptions = {}): boolean {
-  if (!speechSupported() || !text.trim()) return false;
+// The user's own message, while it is being spoken. Scan announcements must
+// never talk over it or cut it off.
+let messageUtterance: SpeechSynthesisUtterance | null = null;
+
+/** True while a message spoken with `speak()` is still playing. */
+export function isSpeakingMessage(): boolean {
+  return messageUtterance != null && speechSupported() && window.speechSynthesis.speaking === true;
+}
+
+function utter(text: string, opts: SpeakOptions): SpeechSynthesisUtterance {
   const synth = window.speechSynthesis;
   synth.cancel();
   const u = new SpeechSynthesisUtterance(text);
@@ -25,7 +32,30 @@ export function speak(text: string, opts: SpeakOptions = {}): boolean {
   u.rate = opts.rate ?? 1;
   u.pitch = opts.pitch ?? 1;
   u.volume = opts.volume ?? 1;
-  synth.speak(u);
+  return u;
+}
+
+/** Speak `text`, interrupting anything already speaking. Returns false if unsupported. */
+export function speak(text: string, opts: SpeakOptions = {}): boolean {
+  if (!speechSupported() || !text.trim()) return false;
+  const u = utter(text, opts);
+  messageUtterance = u;
+  const done = () => {
+    if (messageUtterance === u) messageUtterance = null;
+  };
+  u.onend = done;
+  u.onerror = done;
+  window.speechSynthesis.speak(u);
+  return true;
+}
+
+/**
+ * Speak a short cue, such as the label of a scan highlight. Unlike `speak()`,
+ * it stays quiet while the user's message is playing instead of cutting it off.
+ */
+export function announce(text: string, opts: SpeakOptions = {}): boolean {
+  if (!speechSupported() || !text.trim() || isSpeakingMessage()) return false;
+  window.speechSynthesis.speak(utter(text, opts));
   return true;
 }
 

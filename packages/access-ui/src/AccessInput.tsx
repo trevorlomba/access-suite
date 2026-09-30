@@ -1,7 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { useSettings } from './settings';
 import { Scanner, labelOf } from './scanner';
-import { speak } from './speech';
+import { announce, isSpeakingMessage } from './speech';
 
 const TYPING_TARGETS = new Set(['INPUT', 'TEXTAREA', 'SELECT']);
 
@@ -31,7 +31,7 @@ export function AccessInput({ children }: { children: ReactNode }) {
     const scanner = new Scanner(
       () => document,
       (el) => {
-        if (scanSpeak) speak(labelOf(el), { rate: 1.3, volume: 0.6 });
+        if (scanSpeak) announce(labelOf(el), { rate: 1.3, volume: 0.6 });
       },
     );
     scannerRef.current = scanner;
@@ -41,7 +41,11 @@ export function AccessInput({ children }: { children: ReactNode }) {
     const startTimer = () => {
       if (inputMode !== 'scan-auto') return;
       window.clearInterval(timer);
-      timer = window.setInterval(() => scanner.next(), scanIntervalMs);
+      // Hold the highlight while the user's message is being spoken, so it
+      // isn't talked over and they don't lose their place.
+      timer = window.setInterval(() => {
+        if (!isSpeakingMessage()) scanner.next();
+      }, scanIntervalMs);
     };
 
     const onKey = (e: KeyboardEvent) => {
