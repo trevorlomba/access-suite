@@ -1,0 +1,14 @@
+{
+  "name": "@access-suite/vocab",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
+  },
+  "dependencies": {
+    "compromise": "^14.14.0"
+  }
+}

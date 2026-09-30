@@ -1,41 +1,45 @@
 import { useReducer, useState } from 'react';
+import { BigButton, Dialog, OnScreenKeyboard, ScanGroup, SettingsPanel, useSpeak } from '@access-suite/access-ui';
 import {
-  BigButton,
-  Dialog,
-  OnScreenKeyboard,
-  ScanGroup,
-  SettingsPanel,
-  useSettings,
-  useSpeak,
-} from '@access-suite/access-ui';
-import { isConfigured, type ProviderConfig } from '@access-suite/ai';
-import { CATEGORIES, LETTERS, PRONOUNS, wordsStartingWith, type Word } from './vocab';
-import { messageReducer, messageText, useFrequencies, useSavedPhrases } from './state';
-import { SentenceBar } from './components/SentenceBar';
-import { Suggestions } from './components/Suggestions';
-import { SavedPhrases } from './components/SavedPhrases';
-import { WordRows, tone } from './components/WordRows';
+  CATEGORIES,
+  LETTERS,
+  PRONOUNS,
+  SavedPhrases,
+  SentenceBar,
+  Suggestions,
+  WordRows,
+  messageReducer,
+  messageText,
+  tone,
+  useAiConfig,
+  useFrequencies,
+  useMyVocabulary,
+  useSavedPhrases,
+  vocabCategory,
+  wordsStartingWith,
+  type Word,
+} from '@access-suite/board';
 
 type View = { kind: 'category'; id: string } | { kind: 'letters' } | { kind: 'letter'; letter: string };
 
 export function App() {
-  const { settings } = useSettings();
   const { speak, supported: canSpeakAloud } = useSpeak();
   const { freq, record } = useFrequencies();
   const { saved, add: savePhrase, remove: removePhrase } = useSavedPhrases();
 
+  // Personal vocabulary from the Vocabulary Builder, shown first when present.
+  const myVocab = useMyVocabulary();
+  const mine = vocabCategory(myVocab);
+  const categories = mine ? [mine, ...CATEGORIES] : CATEGORIES;
+
   const [tokens, dispatch] = useReducer(messageReducer, []);
   const [selected, setSelected] = useState<number | null>(null);
-  const [view, setView] = useState<View>({ kind: 'category', id: CATEGORIES[0]!.id });
+  const [view, setView] = useState<View>({ kind: 'category', id: categories[0]!.id });
   const [typing, setTyping] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [announcement, setAnnouncement] = useState('');
 
-  const aiConfig: ProviderConfig | null =
-    settings.aiProvider !== 'none' &&
-    isConfigured({ provider: settings.aiProvider, apiKey: settings.aiKey, model: settings.aiModel })
-      ? { provider: settings.aiProvider, apiKey: settings.aiKey, model: settings.aiModel }
-      : null;
+  const aiConfig = useAiConfig();
 
   const say = (text: string, words: string[]) => {
     speak(text);
@@ -50,13 +54,15 @@ export function App() {
   };
 
   const words = tokens.map((t) => t.text);
-  const current = view.kind === 'category' ? CATEGORIES.find((c) => c.id === view.id) : undefined;
+  const current =
+    view.kind === 'category' ? (categories.find((c) => c.id === view.id) ?? categories[0]) : undefined;
+  const myPhrases = current?.id === 'mine' ? (myVocab?.phrases ?? []) : [];
 
   return (
-    <div className="pb">
-      <header className="pb-header">
+    <div className="tool">
+      <header className="tool-header">
         <h1>Phrase Board</h1>
-        <ScanGroup label="Tools" className="pb-header__tools">
+        <ScanGroup label="Tools" className="tool-header__tools">
           <a href="../" className="big-btn big-btn--quiet home-link" data-scan-item="">
             ⌂ All tools
           </a>
@@ -71,8 +77,8 @@ export function App() {
         </p>
       )}
 
-      <main className="pb-main">
-        <div className="pb-compose">
+      <main className="tool-main">
+        <div className="tool-compose">
           <SentenceBar
             tokens={tokens}
             selected={selected}
@@ -103,8 +109,8 @@ export function App() {
             </ScanGroup>
 
             <ScanGroup label="Word categories" className="tabs">
-              {CATEGORIES.map((c) => {
-                const active = view.kind === 'category' && view.id === c.id;
+              {categories.map((c) => {
+                const active = current?.id === c.id;
                 return (
                   <BigButton
                     key={c.id}
@@ -128,7 +134,17 @@ export function App() {
               </BigButton>
             </ScanGroup>
 
-            {current && <WordRows words={current.words} label={`${current.label} words`} freq={freq} onPick={addWord} />}
+            {myPhrases.length > 0 && (
+              <ScanGroup label="My phrases" className="phrases">
+                {myPhrases.map((p) => (
+                  <BigButton key={p.text} className="phrase" onClick={() => addWord(p.text)}>
+                    {p.text}
+                  </BigButton>
+                ))}
+              </ScanGroup>
+            )}
+
+            {current && <WordRows words={current.words} label={current.id === 'mine' ? 'My words' : `${current.label} words`} freq={freq} onPick={addWord} />}
 
             {view.kind === 'letters' && (
               <div className="letters" role="group" aria-label="Find a word by its first letter">
@@ -152,7 +168,7 @@ export function App() {
                   </BigButton>
                 </ScanGroup>
                 <WordRows
-                  words={wordsStartingWith(view.letter)}
+                  words={wordsStartingWith(view.letter, mine?.words)}
                   label={`Words starting with ${view.letter.toUpperCase()}`}
                   freq={freq}
                   onPick={addWord}
@@ -162,7 +178,7 @@ export function App() {
           </section>
         </div>
 
-        <aside className="pb-side">
+        <aside className="tool-side">
           <SavedPhrases saved={saved} onSpeak={(p) => say(p, p.split(/\s+/))} onRemove={removePhrase} />
         </aside>
       </main>

@@ -79,10 +79,10 @@ export const CATEGORIES: Category[] = [
 ];
 
 /** Every word once (first occurrence wins), for letter filtering across the board. */
-export function allWords(): Word[] {
+export function allWords(extra: Word[] = []): Word[] {
   const seen = new Set<string>();
   const out: Word[] = [];
-  for (const word of [...PRONOUNS, ...CATEGORIES.flatMap((c) => c.words)]) {
+  for (const word of [...extra, ...PRONOUNS, ...CATEGORIES.flatMap((c) => c.words)]) {
     const k = word.text.toLowerCase();
     if (!seen.has(k)) {
       seen.add(k);
@@ -92,9 +92,10 @@ export function allWords(): Word[] {
   return out;
 }
 
-export function wordsStartingWith(letter: string): Word[] {
+/** `extra` (e.g. the user's own words) is searched too, and wins on duplicates. */
+export function wordsStartingWith(letter: string, extra: Word[] = []): Word[] {
   const l = letter.toLowerCase();
-  return allWords()
+  return allWords(extra)
     .filter((x) => x.text.toLowerCase().startsWith(l))
     .sort((a, b) => a.text.localeCompare(b.text));
 }

@@ -70,16 +70,25 @@ export interface DialogProps {
 export function Dialog({ open, title, onClose, children, appRootId = 'root' }: DialogProps) {
   const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
+  // Callers usually pass a fresh function each render; keep it out of the
+  // effect's deps so focus isn't reset on every keystroke inside the dialog.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     if (!open) return;
     const previouslyFocused = document.activeElement as HTMLElement | null;
     const appRoot = document.getElementById(appRootId);
     appRoot?.setAttribute('inert', '');
-    const first = panelRef.current?.querySelector<HTMLElement>('button, input, select, textarea, [tabindex]');
+    const panel = panelRef.current;
+    const first =
+      panel?.querySelector<HTMLElement>('.dialog__body [autofocus], .dialog__body input, .dialog__body textarea, .dialog__body select') ??
+      panel?.querySelector<HTMLElement>('button, [tabindex]');
     first?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') onCloseRef.current();
     };
     document.addEventListener('keydown', onKey);
     return () => {
@@ -87,7 +96,7 @@ export function Dialog({ open, title, onClose, children, appRootId = 'root' }: D
       appRoot?.removeAttribute('inert');
       previouslyFocused?.focus?.();
     };
-  }, [open, onClose, appRootId]);
+  }, [open, appRootId]);
 
   if (!open) return null;
   return createPortal(

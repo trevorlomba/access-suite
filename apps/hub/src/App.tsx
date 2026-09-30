@@ -17,13 +17,15 @@ const TOOLS: Tool[] = [
   },
   {
     name: 'Listen & Reply',
-    status: 'next',
+    status: 'available',
     blurb: 'Captions what someone says to you and turns their words into buttons, so you can reply in a few selections.',
+    href: './listen-reply/',
   },
   {
     name: 'Vocabulary Builder',
-    status: 'planned',
-    blurb: 'Turn your own messages and transcripts into a personal word list, processed entirely on your device.',
+    status: 'available',
+    blurb: 'Turn your own messages and transcripts into a personal word list, processed entirely on your device. Your words then appear in the other tools.',
+    href: './vocabulary-builder/',
   },
   {
     name: 'Dwell Panels',
@@ -90,6 +92,14 @@ export function App() {
             <li>
               <strong>Private.</strong> Your words, saved phrases and settings stay in this browser. Nothing is sent
               to us — there is no “us” server.
+            </li>
+            <li>
+              <strong>Works offline.</strong> After your first visit, every tool keeps working without a connection.
+              Add a tool to your home screen to use it like an app.
+            </li>
+            <li>
+              <strong>Back it up.</strong> Settings → Your data downloads everything in one file, so a browser reset
+              or a new tablet doesn’t lose your phrases.
             </li>
             <li>
               <strong>Every way of selecting.</strong> Touch, mouse, keyboard, one or two switches, and dwell for head

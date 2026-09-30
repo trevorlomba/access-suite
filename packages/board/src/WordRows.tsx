@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BigButton, KIND_COLORS, ScanGroup, textColorFor, useSettings } from '@access-suite/access-ui';
-import type { Word } from '../vocab';
-import { freqScale, type Frequencies } from '../state';
+import type { Word } from './vocab';
+import { freqScale, type Frequencies } from './state';
 
 /** Columns that fit the viewport at the user's button size (2–8). */
 function useColumns(): number {
@@ -21,6 +21,16 @@ function useColumns(): number {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.targetSize]);
   return cols;
+}
+
+/**
+ * Shrink long words a little on narrow grids so they don't break mid-word
+ * ("comfortabl-e"). Never below 75%.
+ */
+export function fitScale(text: string, cols: number): number {
+  const longest = Math.max(...text.split(/\s+/).map((w) => w.length));
+  const fits = cols <= 3 ? 8 : 10; // characters that fit a tile comfortably
+  return longest <= fits ? 1 : Math.max(0.75, fits / longest);
 }
 
 export function tone(word: Word) {
@@ -63,7 +73,7 @@ export function WordRows({
               key={word.text}
               className="word-tile"
               tone={tone(word)}
-              style={{ fontSize: `calc(1.1rem * ${freqScale(freq, word.text).toFixed(3)})` }}
+              style={{ fontSize: `calc(1.1rem * ${(freqScale(freq, word.text) * fitScale(word.text, cols)).toFixed(3)})` }}
               onClick={() => onPick(word)}
             >
               {word.text}

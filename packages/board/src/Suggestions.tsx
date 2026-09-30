@@ -11,10 +11,13 @@ type Status = { kind: 'idle' } | { kind: 'loading'; intent: Intent } | { kind: '
 export function Suggestions({
   config,
   words,
+  context,
   onChoose,
 }: {
   config: ProviderConfig;
   words: string[];
+  /** What was just said to the user; lets suggestions answer it, even before any word is picked. */
+  context?: string;
   onChoose: (sentence: string) => void;
 }) {
   const [results, setResults] = useState<string[]>([]);
@@ -32,7 +35,7 @@ export function Suggestions({
     setStatus({ kind: 'loading', intent });
     setResults([]);
     try {
-      const out = await generate(config, { words, intent, n: 3 }, { signal: ac.signal });
+      const out = await generate(config, { words, intent, n: 3, context }, { signal: ac.signal });
       if (ac.signal.aborted) return;
       setResults(out);
       setStatus({ kind: 'idle' });
@@ -42,7 +45,7 @@ export function Suggestions({
     }
   };
 
-  const disabled = words.length === 0;
+  const disabled = words.length === 0 && !context;
 
   return (
     <section className="suggest" aria-labelledby="suggest-heading">
@@ -63,6 +66,9 @@ export function Suggestions({
       </ScanGroup>
       <div aria-live="polite" className="suggest__status">
         {disabled && <span className="muted">Pick a word or two first.</span>}
+        {!disabled && words.length === 0 && status.kind === 'idle' && results.length === 0 && (
+          <span className="muted">Choose a type to get replies, or pick words first to steer them.</span>
+        )}
         {status.kind === 'loading' && <span>Thinking…</span>}
         {status.kind === 'error' && <span className="error">{status.message}</span>}
         {results.length > 0 && <span className="visually-hidden">{results.length} suggestions ready.</span>}

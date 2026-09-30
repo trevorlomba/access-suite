@@ -1,0 +1,22 @@
+{
+  "name": "@access-suite/board",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./transcript": "./src/transcript.ts",
+    "./board.css": "./src/board.css"
+  },
+  "dependencies": {
+    "@access-suite/access-ui": "*",
+    "@access-suite/ai": "*",
+    "@access-suite/vocab": "*",
+    "compromise": "^14.14.0"
+  },
+  "peerDependencies": {
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  }
+}
