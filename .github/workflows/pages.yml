@@ -1,0 +1,47 @@
+name: Deploy to GitHub Pages
+
+# Builds the whole suite as one static site. The deploy job is disabled while
+# the repository is private (Pages on private repos needs a paid plan, and the
+# site should launch deliberately). To go live:
+#   1. Make the repo public.
+#   2. Settings → Pages → Source: "GitHub Actions".
+#   3. Delete the `if: false` line on the deploy job below.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    if: false # remove when going public (see top of file)
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

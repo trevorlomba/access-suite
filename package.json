@@ -1,0 +1,47 @@
+{
+  "name": "access-suite",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Free, local-first communication and access tools for people with speech and motor impairments.",
+  "license": "MIT",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "npm run dev -w @access-suite/phrase-board",
+    "dev:hub": "npm run dev -w @access-suite/hub",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "build": "npm run build -w @access-suite/hub && npm run build -w @access-suite/phrase-board && node scripts/assemble-site.mjs",
+    "preview": "vite preview --outDir dist --port 4173 --strictPort",
+    "e2e": "playwright test",
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build && npm run e2e"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.63.0",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^26.6.3",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "eslint": "^9.39.5",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.12.0",
+    "jsdom": "^30.1.1",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.1",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2"
+  }
+}

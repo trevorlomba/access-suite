@@ -1,0 +1,418 @@
+@import '@fontsource/atkinson-hyperlegible/latin-400.css';
+@import '@fontsource/atkinson-hyperlegible/latin-700.css';
+
+/* ---- Tokens ------------------------------------------------------------ */
+:root {
+  --target: 72px;
+  --gap: 10px;
+  --radius: 14px;
+  --font: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --bg: #f6f5f1;
+  --surface: #ffffff;
+  --surface-2: #eceae4;
+  --text: #16161a;
+  --muted: #4d4d57;
+  --border: #b9b7b0;
+  --primary: #1f4fd1;
+  --primary-text: #ffffff;
+  --danger: #b3261e;
+  --danger-text: #ffffff;
+  --focus: #1f4fd1;
+  --scan: #ff7a00;
+  --scan-glow: rgba(255, 122, 0, 0.35);
+  --dwell: #1f4fd1;
+  --warn-bg: #fff4d6;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #121316;
+    --surface: #1c1d22;
+    --surface-2: #272830;
+    --text: #f2f2f4;
+    --muted: #b8b8c2;
+    --border: #4a4b55;
+    --primary: #8fb0ff;
+    --primary-text: #0b1330;
+    --danger: #ffb4ab;
+    --danger-text: #410002;
+    --focus: #8fb0ff;
+    --dwell: #8fb0ff;
+    --warn-bg: #3a3218;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #121316;
+  --surface: #1c1d22;
+  --surface-2: #272830;
+  --text: #f2f2f4;
+  --muted: #b8b8c2;
+  --border: #4a4b55;
+  --primary: #8fb0ff;
+  --primary-text: #0b1330;
+  --danger: #ffb4ab;
+  --danger-text: #410002;
+  --focus: #8fb0ff;
+  --dwell: #8fb0ff;
+  --warn-bg: #3a3218;
+  color-scheme: dark;
+}
+
+/* High contrast: black / white / yellow, overrides tile colors too. */
+:root[data-contrast='high'] {
+  --bg: #000000;
+  --surface: #000000;
+  --surface-2: #000000;
+  --text: #ffffff;
+  --muted: #ffffff;
+  --border: #ffffff;
+  --primary: #ffff00;
+  --primary-text: #000000;
+  --danger: #ff6b6b;
+  --danger-text: #000000;
+  --focus: #ffff00;
+  --scan: #00e5ff;
+  --scan-glow: rgba(0, 229, 255, 0.4);
+  --dwell: #ffff00;
+  --warn-bg: #000000;
+  color-scheme: dark;
+}
+
+/* ---- Base -------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 18px;
+  line-height: 1.4;
+  -webkit-text-size-adjust: 100%;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.15;
+  margin: 0;
+}
+
+a {
+  color: var(--primary);
+}
+
+:focus-visible {
+  outline: 4px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.help {
+  display: block;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 4px 0 0;
+}
+
+.warn {
+  background: var(--warn-bg);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+/* ---- Buttons ----------------------------------------------------------- */
+.big-btn {
+  position: relative;
+  min-height: var(--target);
+  min-width: var(--target);
+  padding: 8px 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  touch-action: manipulation;
+  overflow: hidden;
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+
+.big-btn:hover:not(:disabled) {
+  box-shadow: 0 0 0 3px var(--border) inset;
+}
+
+.big-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.big-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.big-btn--primary {
+  background: var(--primary);
+  color: var(--primary-text);
+  border-color: var(--primary);
+}
+
+.big-btn--danger {
+  background: var(--danger);
+  color: var(--danger-text);
+  border-color: var(--danger);
+}
+
+.big-btn--quiet {
+  background: transparent;
+}
+
+.big-btn--tone {
+  background: var(--tone-bg);
+  color: var(--tone-fg);
+  border-color: color-mix(in srgb, var(--tone-bg) 60%, #000);
+}
+
+.big-btn[aria-pressed='true'] {
+  box-shadow: 0 0 0 4px var(--text) inset;
+}
+
+:root[data-contrast='high'] .big-btn,
+:root[data-contrast='high'] .big-btn--tone {
+  background: #000;
+  color: #fff;
+  border: 3px solid #fff;
+}
+
+:root[data-contrast='high'] .big-btn--primary,
+:root[data-contrast='high'] .big-btn[aria-pressed='true'] {
+  background: #ffff00;
+  color: #000;
+  border-color: #ffff00;
+}
+
+/* ---- Scan groups ------------------------------------------------------- */
+.scan-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  border-radius: calc(var(--radius) + 6px);
+  padding: 4px;
+  outline: 0 solid transparent;
+}
+
+.scan-group--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(var(--target) * 1.6), 1fr));
+}
+
+.scan-group--stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Scanning highlight: thick, unmistakable, never color alone. */
+.scan-highlight {
+  outline: 6px solid var(--scan) !important;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 12px var(--scan-glow) !important;
+  position: relative;
+  z-index: 1;
+}
+
+.scan-group.scan-highlight {
+  background: var(--scan-glow);
+}
+
+/* Dwell progress: a bar that fills along the bottom of the button. */
+.big-btn::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 8px;
+  width: 0;
+  background: var(--dwell);
+}
+
+.dwelling::after {
+  animation: dwell-fill var(--dwell-ms, 1000ms) linear forwards;
+}
+
+@keyframes dwell-fill {
+  to {
+    width: 100%;
+  }
+}
+
+/* ---- Dialog ------------------------------------------------------------ */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 100;
+}
+
+.dialog {
+  background: var(--surface);
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  width: min(720px, 100%);
+  max-height: calc(100dvh - 32px);
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 12px 12px 20px;
+  border-bottom: 2px solid var(--surface-2);
+}
+
+.dialog__body {
+  overflow: auto;
+  padding: 16px 20px 20px;
+  display: grid;
+  gap: 12px;
+}
+
+/* ---- On-screen keyboard ------------------------------------------------ */
+.kbd-display {
+  display: block;
+  min-height: 56px;
+  padding: 12px 16px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  word-break: break-word;
+}
+
+.kbd-row {
+  flex-wrap: nowrap;
+}
+
+.kbd-row .big-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 4px;
+}
+
+.kbd-key {
+  font-size: 1.5rem;
+}
+
+/* ---- Settings ---------------------------------------------------------- */
+.settings {
+  display: grid;
+  gap: 16px;
+}
+
+.settings fieldset {
+  border: 2px solid var(--surface-2);
+  border-radius: 14px;
+  padding: 12px 16px 16px;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.settings legend {
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 0 6px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field label {
+  font-weight: 700;
+}
+
+.field input[type='range'] {
+  width: 100%;
+  height: 36px;
+  accent-color: var(--primary);
+}
+
+.field select,
+.field input[type='password'],
+.field input[type='text'] {
+  font: inherit;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  width: 100%;
+}
+
+.radio-card,
+.check {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: 2px solid var(--surface-2);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.radio-card:has(input:checked) {
+  border-color: var(--primary);
+}
+
+.radio-card input,
+.check input {
+  width: 26px;
+  height: 26px;
+  margin: 2px 0 0;
+  accent-color: var(--primary);
+  flex: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
