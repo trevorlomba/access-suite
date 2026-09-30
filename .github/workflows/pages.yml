@@ -1,11 +1,6 @@
 name: Deploy to GitHub Pages
 
-# Builds the whole suite as one static site. The deploy job is disabled while
-# the repository is private (Pages on private repos needs a paid plan, and the
-# site should launch deliberately). To go live:
-#   1. Make the repo public.
-#   2. Settings → Pages → Source: "GitHub Actions".
-#   3. Delete the `if: false` line on the deploy job below.
+# Builds the whole suite as one static site and deploys it to GitHub Pages.
 on:
   push:
     branches: [main]
@@ -36,7 +31,6 @@ jobs:
           path: dist
 
   deploy:
-    if: false # remove when going public (see top of file)
     needs: build
     runs-on: ubuntu-latest
     environment:
