@@ -15,11 +15,22 @@ self.addEventListener('install', (event) => {
   );
 });
 
+// A tablet can keep a tool open for days. A page from an older version still
+// asks for that version's files (such as the AI code, which loads on first
+// use), and after a deploy they are gone from the server. So keep the last
+// few versions' caches instead of deleting them all on activate.
+const KEEP_PREVIOUS = 2;
+
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((k) => k.startsWith('access-suite-') && k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => {
+        // CacheStorage lists caches oldest first.
+        const older = keys.filter((k) => k.startsWith('access-suite-') && k !== CACHE);
+        const stale = older.slice(0, Math.max(0, older.length - KEEP_PREVIOUS));
+        return Promise.all(stale.map((k) => caches.delete(k)));
+      })
       .then(() => self.clients.claim()),
   );
 });
@@ -29,14 +40,23 @@ self.addEventListener('activate', (event) => {
 // (safe here: every asset URL is content-hashed and same-origin).
 const MATCH = { ignoreSearch: true, ignoreVary: true };
 
-function fromCache(request) {
-  return caches.match(request, MATCH).then((hit) => {
+function lookup(store, request) {
+  return store.match(request, MATCH).then((hit) => {
     if (hit) return hit;
     // "/phrase-board" and "/phrase-board/" both mean its index.html.
     const url = new URL(request.url);
     const dir = url.pathname.endsWith('/') ? url.pathname : `${url.pathname}/`;
-    return caches.match(new URL(`${dir}index.html`, url.origin).href, MATCH);
+    return store.match(new URL(`${dir}index.html`, url.origin).href, MATCH);
   });
+}
+
+// This version first, so pages come from the newest build; then older
+// versions, which may still hold files an open page asks for.
+function fromCache(request) {
+  return caches
+    .open(CACHE)
+    .then((cache) => lookup(cache, request))
+    .then((hit) => hit || lookup(caches, request));
 }
 
 self.addEventListener('fetch', (event) => {
