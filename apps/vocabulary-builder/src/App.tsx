@@ -1,4 +1,4 @@
-import { useId, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Dialog, SettingsPanel, writeJSON } from '@access-suite/access-ui';
 import { allWords, loadMyVocabulary } from '@access-suite/board';
 import {
@@ -78,12 +78,22 @@ export function App() {
   const knownWords = useMemo(() => allWords().map((w) => w.text), []);
   const sources: Source[] = [...(pasted.trim() ? [{ name: 'pasted.txt', content: pasted }] : []), ...files];
 
+  // Move focus to the results for keyboard and screen-reader users. Done after
+  // React has rendered them: a requestAnimationFrame could run first, find no
+  // heading yet, and silently drop the focus.
+  const focusReview = useRef(false);
+  useEffect(() => {
+    if (review && focusReview.current) {
+      focusReview.current = false;
+      reviewHeadingRef.current?.focus();
+    }
+  }, [review]);
+
   const openReview = (r: Review, message: string) => {
+    focusReview.current = true;
     setReview(r);
     setStatus(message);
     setFilter('');
-    // Move focus to the results for keyboard and screen-reader users.
-    requestAnimationFrame(() => reviewHeadingRef.current?.focus());
   };
 
   const addFiles = async (list: FileList | null) => {

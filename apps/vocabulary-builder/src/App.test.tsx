@@ -14,8 +14,8 @@ const renderApp = () =>
 
 const stored = () => parseVocabulary(localStorage.getItem(VOCAB_STORAGE_KEY)!);
 
-// The review heading takes focus on the next animation frame. Wait for that
-// before typing, or the focus move can land mid-word and swallow keystrokes.
+// The review heading takes focus once it has rendered. Wait for that before
+// typing elsewhere, so the tests can't race the focus move.
 const reviewReady = async () => {
   const heading = await screen.findByRole('heading', { name: '2. Review' }, { timeout: 5000 });
   await waitFor(() => expect(heading).toHaveFocus());

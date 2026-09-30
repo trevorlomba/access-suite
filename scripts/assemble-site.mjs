@@ -19,6 +19,26 @@ const APPS = [
   { from: 'apps/vocabulary-builder/dist', to: 'vocabulary-builder', name: 'Vocabulary Builder', short: 'Vocabulary' },
 ];
 
+// Content Security Policy for the built site (dev is left alone: Vite's hot
+// reload needs inline scripts). The AI key lives in localStorage, so this is
+// what enforces "no third-party code": scripts only from this site, and
+// network requests only to this site and the two AI providers.
+// It goes right after <meta charset>, since a meta CSP only covers what follows it.
+const CHARSET = '<meta charset="UTF-8" />';
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self'",
+  "style-src 'self'",
+  "img-src 'self' data:",
+  "font-src 'self'",
+  "connect-src 'self' https://api.anthropic.com https://api.openai.com",
+  "worker-src 'self'",
+  "manifest-src 'self'",
+  "object-src 'none'",
+  "base-uri 'none'",
+  "form-action 'none'",
+].join('; ');
+
 rmSync(out, { recursive: true, force: true });
 for (const app of APPS) {
   const src = resolve(root, app.from);
@@ -56,7 +76,14 @@ for (const app of APPS) {
     `<link rel="apple-touch-icon" href="${toIcons}/icon-192.png" />`,
     '<meta name="apple-mobile-web-app-capable" content="yes" />',
   ].join('\n    ');
-  writeFileSync(htmlPath, readFileSync(htmlPath, 'utf8').replace('</head>', `    ${tags}\n  </head>`));
+  const html = readFileSync(htmlPath, 'utf8');
+  if (!html.includes(CHARSET)) throw new Error(`${app.from}/index.html: expected ${CHARSET} to place the CSP after`);
+  writeFileSync(
+    htmlPath,
+    html
+      .replace(CHARSET, `${CHARSET}\n    <meta http-equiv="Content-Security-Policy" content="${CSP}" />`)
+      .replace('</head>', `    ${tags}\n  </head>`),
+  );
 }
 
 // Service worker: precache everything, versioned by content hash.

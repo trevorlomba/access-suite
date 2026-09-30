@@ -51,11 +51,16 @@ export const PROVIDERS: Record<ProviderId, ProviderInfo> = {
 };
 
 // Provider SDKs load on first use, so people who never turn AI on never
-// download them.
+// download them. That download fails when offline on first use, or when the
+// site was updated while this page stayed open.
+function loadFailed(): never {
+  throw new AiError('network', 'Could not load AI suggestions. Check your connection, or reload the page.');
+}
+
 const ADAPTERS: Record<ProviderId, Adapter> = {
   demo: demoAdapter,
-  anthropic: (...args) => import('./anthropic').then((m) => m.anthropicAdapter(...args)),
-  openai: (...args) => import('./openai').then((m) => m.openaiAdapter(...args)),
+  anthropic: (...args) => import('./anthropic').then((m) => m.anthropicAdapter(...args), loadFailed),
+  openai: (...args) => import('./openai').then((m) => m.openaiAdapter(...args), loadFailed),
 };
 
 /** True when the config is complete enough to make a request. */
