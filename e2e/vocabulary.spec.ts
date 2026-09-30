@@ -18,9 +18,9 @@ test.describe('Vocabulary Builder', () => {
     await expect(page.getByText(/Saved \d+ words/)).toBeVisible();
 
     await page.getByRole('link', { name: 'Phrase Board' }).click();
-    const tab = page.getByRole('button', { name: 'My words' });
+    const tab = page.getByRole('button', { name: 'My words', exact: true });
     await expect(tab).toHaveAttribute('aria-pressed', 'true'); // shown first
-    await page.getByRole('group', { name: 'My phrases' }).getByRole('button', { name: 'photo album' }).click();
+    await page.getByRole('button', { name: 'photo album', exact: true }).click();
     await page.getByRole('button', { name: 'Rosa', exact: true }).click();
     await expect.poll(() => messageWords(page)).toEqual(['photo album', 'Rosa']);
 
@@ -34,7 +34,8 @@ test.describe('Vocabulary Builder', () => {
     await page.getByRole('button', { name: 'Find words' }).click();
     await page.getByRole('button', { name: 'Save to this device' }).click();
     await page.goto('listen-reply/');
-    await expect(page.getByRole('heading', { name: 'My words' })).toBeVisible();
+    // Shown first until the other person says something.
+    await expect(page.getByRole('button', { name: 'My words', exact: true })).toHaveAttribute('aria-pressed', 'true');
     await expect(page.getByRole('button', { name: 'Biscuit', exact: true })).toBeVisible();
   });
 });

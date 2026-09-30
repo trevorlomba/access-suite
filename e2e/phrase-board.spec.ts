@@ -1,4 +1,4 @@
-import { expect, messageWords, prepare, spoken, tabTo, test } from './fixtures';
+import { expect, messageWords, openTab, prepare, spoken, tabTo, test } from './fixtures';
 
 const BOARD = 'phrase-board/';
 
@@ -69,8 +69,9 @@ test.describe('Phrase Board', () => {
   test('demo AI suggestions speak when chosen', async ({ page }) => {
     await prepare(page, { aiProvider: 'demo', aiModel: 'demo' });
     await page.goto(BOARD);
-    await page.getByRole('button', { name: 'Needs' }).click();
+    await openTab(page, 'Needs');
     await page.getByRole('button', { name: 'blanket' }).click();
+    await page.getByRole('button', { name: 'Make it a sentence' }).click();
     await page.getByRole('button', { name: 'Ask it' }).click();
     await page.getByRole('button', { name: 'Can I have blanket?' }).click();
     await expect.poll(() => spoken(page)).toEqual(['Can I have blanket?']);

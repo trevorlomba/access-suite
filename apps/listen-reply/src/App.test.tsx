@@ -60,8 +60,9 @@ describe('Listen & Reply', () => {
     renderApp();
     await partnerSays(user, 'What would you like for dinner');
     await user.click(within(screen.getByRole('group', { name: 'Pronouns' })).getByRole('button', { name: 'I' }));
-    await user.click(screen.getByRole('button', { name: 'Show core words' }));
+    await user.click(screen.getByRole('button', { name: 'Core' }));
     await user.click(screen.getByRole('button', { name: 'want' }));
+    await user.click(screen.getByRole('button', { name: 'Their words' }));
     const theirs = screen.getByRole('group', { name: 'Their words' });
     await user.click(within(theirs).getByRole('button', { name: 'dinner' }));
     await user.click(screen.getByRole('button', { name: /speak/i }));
@@ -84,6 +85,7 @@ describe('Listen & Reply', () => {
     const user = userEvent.setup();
     renderApp({ aiProvider: 'demo', aiModel: 'demo' });
     await partnerSays(user, 'Would you like some tea');
+    await user.click(screen.getByRole('button', { name: 'Make it a sentence' }));
     await user.click(screen.getByRole('button', { name: 'Yes…' }));
     await user.click(await screen.findByRole('button', { name: 'Yes, please.' }));
     expect(spoken).toEqual(['Yes, please.']);

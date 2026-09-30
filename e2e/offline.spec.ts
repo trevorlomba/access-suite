@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { expect, messageWords, prepare, spoken, test } from './fixtures';
+import { expect, messageWords, openTab, prepare, spoken, test } from './fixtures';
 
 test.describe('offline & install', () => {
   test('after one visit, every tool works with no connection', async ({ page, context }) => {
@@ -14,9 +14,9 @@ test.describe('offline & install', () => {
     await context.setOffline(true);
     await page.reload();
     await page.getByRole('button', { name: 'want', exact: true }).click();
-    await page.getByRole('button', { name: 'Needs' }).click();
+    await openTab(page, 'Needs');
     await page.getByRole('button', { name: 'water' }).click();
-    await page.getByRole('button', { name: /speak/i }).click();
+    await page.getByRole('button', { name: '🔊 Speak' }).click();
     await expect.poll(() => messageWords(page)).toEqual(['want', 'water']);
     await expect.poll(() => spoken(page)).toEqual(['Want water']);
 
@@ -54,7 +54,7 @@ test.describe('backup & restore', () => {
     await page.goto('phrase-board/');
     await page.getByRole('button', { name: 'Social' }).click();
     await page.getByRole('button', { name: 'good night' }).click();
-    await page.getByRole('button', { name: /save/i }).click();
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
 
     await page.getByRole('button', { name: /settings/i }).click();
     const [download] = await Promise.all([
@@ -68,11 +68,13 @@ test.describe('backup & restore', () => {
     // Wipe everything, as a browser reset would.
     await page.evaluate(() => localStorage.clear());
     await page.reload();
+    await page.getByRole('button', { name: '★ Saved' }).click();
     await expect(page.getByRole('group', { name: 'Saved phrases' }).getByRole('button', { name: 'Good night' })).toHaveCount(0);
 
     await page.getByRole('button', { name: /settings/i }).click();
     await page.getByLabel('Restore from a backup').setInputFiles(file);
     await page.waitForLoadState('load'); // restore reloads the page
+    await page.getByRole('button', { name: '★ Saved' }).click();
     await expect(page.getByRole('group', { name: 'Saved phrases' }).getByRole('button', { name: 'Good night' })).toBeVisible();
   });
 });
