@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SettingsProvider } from '@access-suite/access-ui';
 import { VOCAB_STORAGE_KEY, makeVocabulary, parseVocabulary } from '@access-suite/vocab';
@@ -14,13 +14,20 @@ const renderApp = () =>
 
 const stored = () => parseVocabulary(localStorage.getItem(VOCAB_STORAGE_KEY)!);
 
+// The review heading takes focus on the next animation frame. Wait for that
+// before typing, or the focus move can land mid-word and swallow keystrokes.
+const reviewReady = async () => {
+  const heading = await screen.findByRole('heading', { name: '2. Review' }, { timeout: 5000 });
+  await waitFor(() => expect(heading).toHaveFocus());
+};
+
 describe('Vocabulary Builder', () => {
   it('finds words in the sample, lets you drop and edit them, and saves to the device', async () => {
     const user = userEvent.setup();
     renderApp();
     await user.click(screen.getByRole('button', { name: 'Use sample text' }));
     await user.click(screen.getByRole('button', { name: 'Find words' }));
-    await screen.findByRole('heading', { name: '2. Review' }, { timeout: 5000 });
+    await reviewReady();
     expect(screen.getByText(/Found \d+ words and \d+ phrases in 20 messages/)).toBeInTheDocument();
 
     const table = screen.getByRole('table', { name: 'Words found' });
@@ -48,7 +55,7 @@ describe('Vocabulary Builder', () => {
     renderApp();
     await user.type(screen.getByRole('textbox', { name: /paste messages/i }), 'hello there\nhello again');
     await user.click(screen.getByRole('button', { name: 'Find words' }));
-    await screen.findByRole('heading', { name: '2. Review' }, { timeout: 5000 });
+    await reviewReady();
     await user.type(screen.getByRole('textbox', { name: 'Add a word or name' }), 'Grandma June');
     await user.click(screen.getByRole('button', { name: 'Add' }));
     await user.click(screen.getByRole('button', { name: 'Save to this device' }));
